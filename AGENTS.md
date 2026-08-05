@@ -158,7 +158,7 @@ File `.env.local` dan kredensial apa pun tidak boleh pernah masuk commit. Pastik
 
 Update manual setiap phase selesai, sesuai Definition of Done di `PLAN.md`.
 
-- [ ] Phase 0, setup dan fondasi proyek
+- [x] Phase 0, setup dan fondasi proyek
 - [ ] Phase 1, MVP, Mode A, What-If Calculator
 - [ ] Phase 2, data-driven ringan, Mode B awal, CSV upload, benchmark
 - [ ] Phase 3, statistik lanjutan, elastisitas, Monte Carlo, hanya untuk data yang layak
