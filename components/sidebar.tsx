@@ -10,6 +10,7 @@ import {
   Database,
   LogOut,
   PanelLeftClose,
+  PanelLeftOpen,
   type LucideIcon,
 } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
@@ -41,29 +42,43 @@ export function Sidebar({
   return (
     <aside
       className={`sticky top-0 hidden h-screen shrink-0 overflow-hidden border-r border-line bg-sidebar transition-[width] duration-200 md:flex ${
-        open ? "w-[240px]" : "w-0 border-r-0"
+        open ? "w-[240px]" : "w-[64px]"
       }`}
     >
-      <div className="flex h-full w-[240px] flex-col">
-        <div className="flex items-center gap-2 px-4 py-6">
+      <div
+        className={`flex h-full flex-col ${open ? "w-[240px]" : "w-[64px]"}`}
+      >
+        <div
+          className={`relative flex items-center py-6 ${
+            open ? "px-4" : "justify-center"
+          }`}
+        >
           <Image
-            src="/assets/dflogo.png"
-            alt=""
-            width={26}
+            src={open ? "/assets/logoname.png" : "/assets/dflogo.png"}
+            alt="DecideFirst"
+            width={open ? 142 : 26}
             height={26}
             priority
           />
-          <p className="text-[13px] font-semibold uppercase tracking-wide text-ink">
-            DecideFirst
-          </p>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label="Tutup sidebar"
-            className="ml-auto text-sub transition-colors duration-150 hover:text-ink"
-          >
-            <PanelLeftClose size={18} strokeWidth={1.5} />
-          </button>
+          {open ? (
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Ciutkan sidebar"
+              className="ml-auto text-sub transition-colors duration-150 hover:text-ink"
+            >
+              <PanelLeftClose size={18} strokeWidth={1.5} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Buka sidebar"
+              className="absolute right-2 top-6 text-sub transition-colors duration-150 hover:text-ink"
+            >
+              <PanelLeftOpen size={18} strokeWidth={1.5} />
+            </button>
+          )}
         </div>
 
         <nav className="flex flex-col gap-1 px-3">
@@ -77,30 +92,34 @@ export function Sidebar({
               <Link
                 key={item.href}
                 href={item.href}
+                title={open ? undefined : item.label}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${
                   isActive
                     ? "bg-sidebar-active font-semibold text-white"
                     : "text-sidebar-fg hover:bg-neutral-100 hover:text-sidebar-fg-active"
-                }`}
+                } ${open ? "" : "justify-center px-0"}`}
               >
                 <Icon size={18} strokeWidth={1.5} />
-                {item.label}
+                {open ? item.label : null}
               </Link>
             );
           })}
         </nav>
 
         <div className="mt-auto border-t border-line px-4 py-4">
-          {userEmail ? (
+          {open && userEmail ? (
             <p className="mb-3 truncate text-[12px] text-muted">{userEmail}</p>
           ) : null}
           <form action={signOut}>
             <button
               type="submit"
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg transition-colors duration-150 hover:bg-neutral-100 hover:text-sidebar-fg-active"
+              title={open ? undefined : "Keluar"}
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg transition-colors duration-150 hover:bg-neutral-100 hover:text-sidebar-fg-active ${
+                open ? "" : "justify-center px-0"
+              }`}
             >
               <LogOut size={18} strokeWidth={1.5} />
-              Keluar
+              {open ? "Keluar" : null}
             </button>
           </form>
         </div>
