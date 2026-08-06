@@ -54,9 +54,9 @@ export function Sidebar({
           }`}
         >
           <Image
-            src="/assets/dflogo.png"
+            src={open ? "/assets/logoname.png" : "/assets/dflogo.png"}
             alt="DecideFirst"
-            width={26}
+            width={open ? 142 : 26}
             height={26}
             priority
           />
