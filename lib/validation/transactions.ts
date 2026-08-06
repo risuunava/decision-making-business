@@ -10,28 +10,42 @@ export const CSV_EXPECTED_HEADERS = [
 ] as const;
 
 const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
-const dmyDatePattern = /^\d{2}\/\d{2}\/\d{4}$/;
 
 export function normalizeDate(value: string): string | null {
   const trimmed = value.trim();
   if (isoDatePattern.test(trimmed)) {
     return trimmed;
   }
-  const dmyMatch = trimmed.match(dmyDatePattern);
-  if (dmyMatch) {
-    const [day, month, year] = trimmed.split("/");
-    return `${year}-${month}-${day}`;
+
+  const parts = trimmed.split(/[/\-.]/);
+  if (parts.length !== 3) return null;
+
+  const [dayPart, monthPart, yearPart] = parts;
+  if (
+    !/^\d{1,2}$/.test(dayPart) ||
+    !/^\d{1,2}$/.test(monthPart) ||
+    !/^\d{4}$/.test(yearPart)
+  ) {
+    return null;
   }
-  return null;
+
+  const day = Number(dayPart);
+  const month = Number(monthPart);
+  const year = Number(yearPart);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 export function isValidDate(value: string): boolean {
-  if (!normalizeDate(value)) return false;
-  const normalized = normalizeDate(value)!;
-  const date = new Date(`${normalized}T00:00:00`);
+  const normalized = normalizeDate(value);
+  if (!normalized) return false;
+  const [year, month, day] = normalized.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
   return (
-    !Number.isNaN(date.getTime()) &&
-    date.toISOString().slice(0, 10) === normalized
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
   );
 }
 
@@ -60,9 +74,17 @@ export const transactionRowSchema = z.object({
 
 export function parseNumberInput(value: unknown): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
-  const trimmed = String(value ?? "").trim();
+
+  const trimmed = String(value ?? "").trim().replace(/\s/g, "");
   if (trimmed === "") return Number.NaN;
-  const normalized = trimmed.replace(",", ".");
+
+  let normalized: string;
+  if (trimmed.includes(",")) {
+    normalized = trimmed.replace(/\./g, "").replace(",", ".");
+  } else {
+    normalized = trimmed.replace(/\./g, "");
+  }
+
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : Number.NaN;
 }
@@ -106,7 +128,9 @@ export function validateCsvRows(rows: unknown[]): {
 }
 
 export function validateCsvHeaders(headers: unknown[]): string[] {
-  const normalized = headers.map((header) => String(header ?? "").trim());
+  const normalized = headers.map((header) =>
+    String(header ?? "").replace(/^\uFEFF/, "").trim()
+  );
   return CSV_EXPECTED_HEADERS.filter(
     (expected) => !normalized.includes(expected)
   );
