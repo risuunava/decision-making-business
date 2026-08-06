@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { CsvTransactionRow } from "@/types";
-import {
-  normalizeDate,
-  parseNumberInput,
-  transactionRowSchema,
-} from "@/lib/validation/transactions";
+import { validateCsvRows } from "@/lib/validation/transactions";
 
 export type DataActionResult = {
   success: boolean;
@@ -49,19 +45,7 @@ export async function saveTransactions(
     };
   }
 
-  const validated: CsvTransactionRow[] = [];
-  for (const row of rows) {
-    const parsed = transactionRowSchema.safeParse({
-      date: normalizeDate(row.date),
-      item_name: row.item_name,
-      quantity: parseNumberInput(row.quantity),
-      unit_price: parseNumberInput(row.unit_price),
-      cost_per_unit: parseNumberInput(row.cost_per_unit),
-    });
-    if (parsed.success) {
-      validated.push(parsed.data);
-    }
-  }
+  const validated = validateCsvRows(rows).valid;
 
   if (validated.length === 0) {
     return { success: false, message: "Semua baris gagal validasi." };

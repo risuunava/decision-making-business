@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ScenarioInput, ScenarioType } from "@/types";
 
 function numberField(label: string, min: number, minMessage: string) {
   return z
@@ -97,20 +96,3 @@ export const scenarioSchema = z.discriminatedUnion("scenarioType", [
   staffingSchema,
   inventorySchema,
 ]);
-
-export const scenarioTypeSchema = z.enum([
-  "pricing",
-  "discount",
-  "staffing",
-  "inventory",
-]);
-
-export function isScenarioType(value: string): value is ScenarioType {
-  return scenarioTypeSchema.safeParse(value).success;
-}
-
-export function parseScenarioInput(input: unknown): ScenarioInput {
-  return scenarioSchema.parse(input);
-}
-
-export type { ScenarioType };

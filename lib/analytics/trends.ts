@@ -1,4 +1,4 @@
-import { round } from "@/lib/simulation";
+import { round } from "@/lib/simulation/engine";
 
 export interface TransactionLike {
   date: string;

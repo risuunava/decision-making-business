@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 import { BadgePercent, Package, Tag, Users } from "lucide-react";
 import type { ScenarioInput, ScenarioType, SimulationResult } from "@/types";
-import { calculateProfitImpact } from "@/lib/simulation";
+import { calculateProfitImpact } from "@/lib/simulation/engine";
 import { scenarioSchema } from "@/lib/validation/scenarios";
 import { saveSimulation } from "@/lib/actions/simulation";
 import { SCENARIO_FIELDS, SCENARIO_DESCRIPTION } from "@/lib/scenario-fields";

@@ -6,6 +6,7 @@ import Papa from "papaparse";
 import { Download, FileUp } from "lucide-react";
 import type { CsvTransactionRow } from "@/types";
 import {
+  CSV_EXPECTED_HEADERS,
   validateCsvHeaders,
   validateCsvRows,
 } from "@/lib/validation/transactions";
@@ -14,13 +15,6 @@ import type { DataActionResult } from "@/lib/actions/data";
 import { Button, buttonClasses } from "@/components/button";
 import { formatNumber } from "@/lib/constants";
 
-const TEMPLATE_HEADER = [
-  "date",
-  "item_name",
-  "quantity",
-  "unit_price",
-  "cost_per_unit",
-];
 const TEMPLATE_SAMPLE = [
   "2026-07-01",
   "Kopi Tubruk",
@@ -45,9 +39,10 @@ export function DataUpload() {
   const [totalRead, setTotalRead] = useState<number | null>(null);
 
   function downloadTemplate() {
-    const content = [TEMPLATE_HEADER.join(","), TEMPLATE_SAMPLE.join(",")].join(
-      "\n"
-    );
+    const content = [
+      CSV_EXPECTED_HEADERS.join(","),
+      TEMPLATE_SAMPLE.join(","),
+    ].join("\n");
     const blob = new Blob([content], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

@@ -1,4 +1,4 @@
-import type { ScenarioInput, ScenarioType } from "@/types";
+import type { ScenarioType } from "@/types";
 
 export type FieldKind = "money" | "percent" | "quantity";
 
