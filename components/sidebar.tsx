@@ -34,7 +34,7 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col bg-sidebar md:flex">
+    <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-line bg-sidebar md:flex">
       <div className="px-4 py-6">
         <p className="text-[13px] font-semibold uppercase tracking-wide text-sidebar-fg-active">
           DecideFirst
@@ -54,17 +54,17 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${
                 isActive
-                  ? "bg-sidebar-active font-semibold text-black"
-                  : "text-sidebar-fg hover:text-sidebar-fg-active"
+                  ? "bg-sidebar-active font-semibold text-white"
+                  : "text-sidebar-fg hover:bg-neutral-100 hover:text-sidebar-fg-active"
               }`}
             >
-              <Icon size={18} strokeWidth={2} />
+              <Icon size={18} strokeWidth={1.5} />
               {item.label}
             </Link>
           );
         })}
 
-        <div className="mt-2 border-t border-white/10 pt-2">
+        <div className="mt-2 border-t border-line pt-2">
           {MENU_DISABLED.map((item) => {
             const Icon = item.icon;
             return (
@@ -73,7 +73,7 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
                 className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg opacity-50"
                 title={`${item.label} tersedia di ${item.note}`}
               >
-                <Icon size={18} strokeWidth={2} />
+                <Icon size={18} strokeWidth={1.5} />
                 <span className="flex-1">{item.label}</span>
                 <span className="text-[11px]">{item.note}</span>
               </div>
@@ -82,16 +82,16 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
         </div>
       </nav>
 
-      <div className="mt-auto border-t border-white/10 px-4 py-4">
+      <div className="mt-auto border-t border-line px-4 py-4">
         {userEmail ? (
-          <p className="mb-3 truncate text-[12px] text-sidebar-fg">{userEmail}</p>
+          <p className="mb-3 truncate text-[12px] text-muted">{userEmail}</p>
         ) : null}
         <form action={signOut}>
           <button
             type="submit"
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg transition-colors duration-150 hover:text-sidebar-fg-active"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg transition-colors duration-150 hover:bg-neutral-100 hover:text-sidebar-fg-active"
           >
-            <LogOut size={18} strokeWidth={2} />
+            <LogOut size={18} strokeWidth={1.5} />
             Keluar
           </button>
         </form>

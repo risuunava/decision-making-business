@@ -45,11 +45,11 @@ Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (
   --color-status-neutral: #525252;   /* proses berjalan */
   --color-status-info: #171717;      /* status default */
 
-  /* Sidebar (hitam pekat, kontras dengan konten terang) */
-  --color-sidebar-bg: #111827;
-  --color-sidebar-text: #D4D4D4;
-  --color-sidebar-text-active: #FFFFFF;  /* logo & hover */
-  --color-sidebar-active-bg: #FFFFFF;    /* item aktif: putih, teks hitam */
+  /* Sidebar (terang, konsisten dengan konten; item aktif pill hitam) */
+  --color-sidebar-bg: #FFFFFF;
+  --color-sidebar-text: #737373;
+  --color-sidebar-text-active: #171717;  /* logo & hover */
+  --color-sidebar-active-bg: #171717;    /* item aktif: pill hitam, teks putih */
 }
 ```
 
@@ -183,7 +183,7 @@ Semua layout wajib mengikuti grid 8px. Tidak ada angka spacing sembarang.
 └──────────┴────────────────────────────────────────────┘
 ```
 
-- Sidebar hitam pekat (`--color-sidebar-bg`), item aktif **putih dengan teks hitam**, sisanya abu terang.
+- Sidebar terang (`bg-white`, border kanan `--color-border`, sama seperti area konten), item aktif **pill hitam dengan teks putih** (konsisten dengan CTA landing), hover row `#F8F8F8`, icon `strokeWidth 1.5`.
 - Semua card: putih, border tipis, `rounded-xl`, padding 24px.
 
 ---
@@ -254,4 +254,4 @@ Card upload CSV, preview, tren omzet (line chart hitam), item terlaris.
 - ❌ Semua warna non-monokrom: gradient, neon, glassmorphism, shadow tebal.
 - ❌ Animasi berlebihan; transisi hanya untuk hover/focus.
 - ❌ Lebih dari satu kata serif miring per judul.
-- ❌ Dark mode kedua: sidebar hitam sudah menjadi area gelap; konten tetap terang.
+- ❌ Dark mode kedua: tidak ada area gelap sama sekali, sidebar ikut terang (monokrom penuh).

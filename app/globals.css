@@ -23,11 +23,11 @@
   --color-status-neutral: #525252;
   --color-status-info: #171717;
 
-  /* Sidebar (hitam pekat, kontras dengan konten terang) */
-  --color-sidebar-bg: #111827;
-  --color-sidebar-text: #d4d4d4;
-  --color-sidebar-text-active: #ffffff;
-  --color-sidebar-active-bg: #ffffff;
+  /* Sidebar (terang, konsisten dengan konten; item aktif pill hitam) */
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-text: #737373;
+  --color-sidebar-text-active: #171717;
+  --color-sidebar-active-bg: #171717;
 
   /* Typografi */
   --text-display: 28px;
