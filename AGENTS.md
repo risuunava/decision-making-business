@@ -159,7 +159,7 @@ File `.env.local` dan kredensial apa pun tidak boleh pernah masuk commit. Pastik
 Update manual setiap phase selesai, sesuai Definition of Done di `PLAN.md`.
 
 - [x] Phase 0, setup dan fondasi proyek
-- [ ] Phase 1, MVP, Mode A, What-If Calculator
+- [ ] Phase 1, MVP, Mode A, What-If Calculator (kode selesai, menunggu deploy Vercel oleh user)
 - [ ] Phase 2, data-driven ringan, Mode B awal, CSV upload, benchmark
 - [ ] Phase 3, statistik lanjutan, elastisitas, Monte Carlo, hanya untuk data yang layak
 - [ ] Phase 4, Smart Layer non-LLM, Template NLG lanjutan, decision tree, parsing input
