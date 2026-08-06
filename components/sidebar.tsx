@@ -49,8 +49,8 @@ export function Sidebar({
         className={`flex h-full flex-col ${open ? "w-[240px]" : "w-[64px]"}`}
       >
         <div
-          className={`relative flex items-center py-6 ${
-            open ? "px-4" : "justify-center"
+          className={`flex items-center py-6 ${
+            open ? "px-4" : "flex-col gap-3"
           }`}
         >
           <Image
@@ -74,7 +74,7 @@ export function Sidebar({
               type="button"
               onClick={onToggle}
               aria-label="Buka sidebar"
-              className="absolute right-2 top-6 text-sub transition-colors duration-150 hover:text-ink"
+              className="text-sub transition-colors duration-150 hover:text-ink"
             >
               <PanelRight size={18} strokeWidth={1.5} />
             </button>
