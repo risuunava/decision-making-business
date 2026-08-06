@@ -104,31 +104,31 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 ### Langkah Kerja
 
 **2.1 — Tabel `transactions` & `pricing_history`**
-- Tambah skema sesuai PRD §9
-- RLS disesuaikan
+- [x] Tambah skema sesuai PRD §9 (migrasi `0002_phase2.sql`)
+- [x] RLS disesuaikan (policy select/insert/update/delete lewat kepemilikan business)
 
 **2.2 — Upload CSV**
-- UI upload file, parsing pakai PapaParse (client-side, tidak butuh backend khusus)
-- Validasi format kolom (tanggal, item, quantity, harga, cost)
-- Preview data sebelum konfirmasi simpan ke Supabase
+- [x] UI upload file, parsing pakai PapaParse (client-side, tidak butuh backend khusus)
+- [x] Validasi format kolom (tanggal, item, quantity, harga, cost), format tanggal YYYY-MM-DD atau DD/MM/YYYY
+- [x] Preview data sebelum konfirmasi simpan ke Supabase (validasi ulang di server action, delete + insert batch)
 
 **2.3 — Insight Berbasis Tren (bukan elastisitas otomatis)**
-- Hitung metrik deskriptif murni: rata-rata omzet per bulan, growth rate, item terlaris
-- **Eksplisit tidak** menghitung elastisitas harga otomatis di sini (sesuai batasan §7 — baru masuk akal kalau ada variasi harga historis yang cukup)
-- Tampilkan sebagai dashboard ringkas di halaman terpisah dari Scenario Builder
+- [x] Hitung metrik deskriptif murni: rata-rata omzet per bulan, growth rate, item terlaris (pure function di `/lib/analytics/trends.ts` + unit test)
+- [x] **Eksplisit tidak** menghitung elastisitas harga otomatis di sini (sesuai batasan §7 — baru masuk akal kalau ada variasi harga historis yang cukup)
+- [x] Tampilkan sebagai dashboard ringkas di halaman `/data` (terpisah dari Scenario Builder)
 
 **2.4 — Benchmark Industri (data statis, dikurasi manual)**
-- Buat file data statis (`/lib/data/benchmarks.ts`) berisi angka referensi umum per jenis bisnis (mis. margin tipikal F&B, elastisitas umum kategori tertentu — dari riset publik, bukan dari user)
-- Tampilkan sebagai pembanding opsional saat user isi asumsi manual di Scenario Builder — bukan angka otomatis yang dipakai sistem, murni referensi untuk bantu user
+- [x] Buat file data statis (`/lib/data/benchmarks.ts`) berisi angka referensi umum per jenis bisnis (mis. margin tipikal F&B, elastisitas umum kategori tertentu — dari riset publik, bukan dari user)
+- [x] Tampilkan sebagai pembanding opsional saat user isi asumsi manual di Scenario Builder — bukan angka otomatis yang dipakai sistem, murni referensi untuk bantu user
 
 **2.5 — Integrasi Scenario Builder dengan Data**
-- Saat user buat simulasi baru, tampilkan data historis relevan sebagai *bantuan konteks* (misal: "Rata-rata volume penjualan bulan lalu: X unit") di sebelah form, tanpa auto-fill asumsi
+- [x] Saat user buat simulasi baru, tampilkan data historis relevan sebagai *bantuan konteks* (misal: "Rata-rata omzet bulanan: X") di sebelah form, tanpa auto-fill asumsi
 
 ### Definition of Done
-- [ ] User bisa upload CSV transaksi dan lihat preview sebelum simpan
-- [ ] Dashboard tren dasar (omzet, growth) tampil benar dari data ter-upload
-- [ ] Benchmark industri muncul sebagai referensi di Scenario Builder
-- [ ] Tidak ada klaim "elastisitas dari data Anda" di UI manapun — audit ulang semua copy/teks di aplikasi untuk pastikan sesuai batasan PRD §7
+- [x] User bisa upload CSV transaksi dan lihat preview sebelum simpan
+- [x] Dashboard tren dasar (omzet, growth) tampil benar dari data ter-upload
+- [x] Benchmark industri muncul sebagai referensi di Scenario Builder
+- [x] Tidak ada klaim "elastisitas dari data Anda" di UI manapun — audit ulang semua copy/teks di aplikasi untuk pastikan sesuai batasan PRD §7
 
 ---
 
