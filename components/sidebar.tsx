@@ -54,7 +54,7 @@ export function Sidebar({
           }`}
         >
           <Image
-            src={open ? "/assets/logoname.png" : "/assets/dflogo.png"}
+            src={open ? "/assets/logoname2.png" : "/assets/dflogo.png"}
             alt="DecideFirst"
             width={open ? 142 : 26}
             height={26}
