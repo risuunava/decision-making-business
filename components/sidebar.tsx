@@ -9,8 +9,8 @@ import {
   History,
   Database,
   LogOut,
-  PanelLeftClose,
-  PanelLeftOpen,
+  PanelLeft,
+  PanelRight,
   type LucideIcon,
 } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
@@ -67,7 +67,7 @@ export function Sidebar({
               aria-label="Ciutkan sidebar"
               className="ml-auto text-sub transition-colors duration-150 hover:text-ink"
             >
-              <PanelLeftClose size={18} strokeWidth={1.5} />
+              <PanelLeft size={18} strokeWidth={1.5} />
             </button>
           ) : (
             <button
@@ -76,7 +76,7 @@ export function Sidebar({
               aria-label="Buka sidebar"
               className="absolute right-2 top-6 text-sub transition-colors duration-150 hover:text-ink"
             >
-              <PanelLeftOpen size={18} strokeWidth={1.5} />
+              <PanelRight size={18} strokeWidth={1.5} />
             </button>
           )}
         </div>
