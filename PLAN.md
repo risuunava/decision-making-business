@@ -49,51 +49,51 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 ### Langkah Kerja
 
 **1.1 — Data Model & Skema Database**
-- Buat tabel di Supabase sesuai §9 PRD: `businesses`, `simulations`, `decision_log` (skip `transactions`/`pricing_history` dulu — baru dipakai Phase 2)
-- Setup Row Level Security (RLS) di Supabase: user hanya bisa akses data miliknya sendiri
+- [x] Buat tabel di Supabase sesuai §9 PRD: `businesses`, `simulations`, `decision_log` (skip `transactions`/`pricing_history` dulu — baru dipakai Phase 2)
+- [x] Setup Row Level Security (RLS) di Supabase: user hanya bisa akses data miliknya sendiri
 
 **1.2 — Auth Dasar**
-- Implementasi Supabase Auth (email/password atau magic link — magic link lebih simpel, tidak perlu handle reset password manual)
-- Halaman: `/login`, `/register`, proteksi route dashboard dengan middleware
+- [x] Implementasi Supabase Auth (email/password, dengan alur email confirmation bawaan Supabase)
+- [x] Halaman: `/login`, `/register`, proteksi route dengan proxy (`proxy.ts`, konvensi Next 16)
 
 **1.3 — Onboarding Ringan**
-- Form: nama bisnis, jenis bisnis (dropdown: F&B, retail, jasa, lainnya), mata uang (default IDR)
-- Simpan ke tabel `businesses`
+- [x] Form: nama bisnis, jenis bisnis (dropdown: F&B, retail, jasa, lainnya), mata uang (default IDR)
+- [x] Simpan ke tabel `businesses`
 
 **1.4 — Scenario Builder (fitur inti)**
-- Form input per jenis skenario:
+- [x] Form input per jenis skenario:
   - **Pricing:** harga saat ini, harga baru, estimasi perubahan volume penjualan (%)
   - **Discount:** persentase diskon, estimasi kenaikan volume dari diskon
   - **Staffing:** gaji tambahan, estimasi kenaikan omzet yang dibutuhkan
   - **Inventory:** perubahan stok (%), estimasi lost-sales atau saving biaya
-- Validasi input pakai `zod` (semua angka harus masuk akal — no negative price, dsb)
+- [x] Validasi input pakai `zod` (semua angka harus masuk akal — no negative price, dsb)
 
 **1.5 — Simulation Engine (murni TypeScript, tanpa backend Python)**
-- Buat fungsi kalkulasi murni di `/lib/simulation/`:
+- [x] Buat fungsi kalkulasi murni di `/lib/simulation/`:
   - `calculateProfitImpact()` — profit sebelum vs sesudah
   - `calculateBreakeven()` — titik impas dari perubahan
   - `calculateMargin()` — margin sebelum vs sesudah
-- **Penting:** fungsi-fungsi ini harus pure function (tidak ada side effect), supaya mudah di-unit-test dan diaudit — ini krusial karena user mempercayai angka dari sini untuk keputusan nyata
+- [x] **Penting:** fungsi-fungsi ini harus pure function (tidak ada side effect), supaya mudah di-unit-test dan diaudit — ini krusial karena user mempercayai angka dari sini untuk keputusan nyata
 
 **1.6 — Hasil Simulasi (UI)**
-- Tampilkan profit before/after, margin, breakeven dalam grafik bar sederhana (Recharts)
-- Simpan hasil ke tabel `simulations`
+- [x] Tampilkan profit before/after, margin, breakeven dalam grafik bar sederhana (Recharts)
+- [x] Simpan hasil ke tabel `simulations`
 
 **1.7 — Insight Rule-Based (Template NLG sederhana, versi awal)**
-- Buat set template kalimat kondisional dasar di `/lib/insights/templates.ts`
-- Contoh logika: `if (profitChange > 0 && customerDropAssumed < breakevenDropThreshold) → tampilkan insight positif dengan angka ambang batas`
-- Ini versi ringan dari yang akan diperluas di Phase 4
+- [x] Buat set template kalimat kondisional dasar di `/lib/insights/templates.ts`
+- [x] Contoh logika: `if (profitChange > 0 && customerDropAssumed < breakevenDropThreshold) → tampilkan insight positif dengan angka ambang batas`
+- [x] Ini versi ringan dari yang akan diperluas di Phase 4
 
 **1.8 — Decision Log**
-- Setiap simulasi otomatis tersimpan sebagai entry di `decision_log`
-- UI list sederhana: riwayat simulasi yang pernah dibuat
+- [x] Setiap simulasi otomatis tersimpan sebagai entry di `decision_log`
+- [x] UI list sederhana: riwayat simulasi yang pernah dibuat
 
 ### Definition of Done
-- [ ] User bisa registrasi, login, isi onboarding
-- [ ] User bisa membuat simulasi di keempat jenis skenario (pricing/discount/staffing/inventory)
-- [ ] Hasil kalkulasi benar secara matematis (**wajib ada unit test** untuk tiap fungsi di simulation engine — ini paling kritikal karena salah hitung = user ambil keputusan salah)
-- [ ] Insight rule-based dasar muncul dan masuk akal
-- [ ] Deploy production di Vercel, bisa diakses publik
+- [x] User bisa registrasi, login, isi onboarding
+- [x] User bisa membuat simulasi di keempat jenis skenario (pricing/discount/staffing/inventory)
+- [x] Hasil kalkulasi benar secara matematis (**wajib ada unit test** untuk tiap fungsi di simulation engine — ini paling kritikal karena salah hitung = user ambil keputusan salah)
+- [x] Insight rule-based dasar muncul dan masuk akal
+- [ ] Deploy production di Vercel, bisa diakses publik (manual, perlu user)
 
 ---
 
