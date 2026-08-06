@@ -31,14 +31,17 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-line bg-sidebar md:flex">
-      <div className="px-4 py-6">
+      <div className="flex items-center gap-2 px-4 py-6">
         <Image
           src="/assets/dflogo.png"
-          alt="DecideFirst"
+          alt=""
           width={26}
           height={26}
           priority
         />
+        <p className="text-[13px] font-semibold uppercase tracking-wide text-ink">
+          DecideFirst
+        </p>
       </div>
 
       <nav className="flex flex-col gap-1 px-3">
