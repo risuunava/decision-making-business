@@ -40,6 +40,9 @@ export function DataUpload() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [banner, setBanner] = useState<DataActionResult | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseErrors, setParseErrors] = useState<string[]>([]);
+  const [totalRead, setTotalRead] = useState<number | null>(null);
 
   function downloadTemplate() {
     const content = [TEMPLATE_HEADER.join(","), TEMPLATE_SAMPLE.join(",")].join(
@@ -60,17 +63,34 @@ export function DataUpload() {
     setRows(null);
     setErrorRows([]);
     setMissingHeaders([]);
+    setParseErrors([]);
+    setTotalRead(null);
+    setIsParsing(true);
 
     Papa.parse<Record<string, unknown>>(file, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: (header) => header.trim(),
+      transformHeader: (header) => header.replace(/^\uFEFF/, "").trim(),
       complete: (result) => {
+        setIsParsing(false);
+        const messages = (result.errors ?? [])
+          .slice(0, 3)
+          .map((error) => error.message);
+        setParseErrors(messages);
+
         const missing = validateCsvHeaders(result.meta.fields ?? []);
         if (missing.length > 0) {
           setMissingHeaders(missing);
           return;
         }
+
+        const total = result.data.length;
+        setTotalRead(total);
+        if (total === 0) {
+          setBanner({ success: false, message: "File tidak berisi baris data." });
+          return;
+        }
+
         const { valid, errors } = validateCsvRows(result.data);
         setRows(valid);
         setErrorRows(errors);
@@ -87,6 +107,8 @@ export function DataUpload() {
         setRows(null);
         setErrorRows([]);
         setMissingHeaders([]);
+        setParseErrors([]);
+        setTotalRead(null);
         setFileName(null);
         if (fileRef.current) fileRef.current.value = "";
         router.refresh();
@@ -142,6 +164,29 @@ export function DataUpload() {
         </p>
       ) : null}
 
+      {isParsing ? (
+        <p className="mt-3 text-[13px] text-sub">Memproses file...</p>
+      ) : null}
+
+      {parseErrors.length > 0 ? (
+        <div className="mt-4 rounded-lg border border-line p-4">
+          <p className="text-[13px] font-semibold text-warn">
+            File dibaca dengan beberapa masalah
+          </p>
+          <ul className="mt-2 flex flex-col gap-1">
+            {parseErrors.map((message, index) => (
+              <li key={index} className="text-[12px] text-sub">
+                {message}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[12px] text-muted">
+            Periksa apakah baris berisi tanda kutip atau delimiter tidak
+            konsisten. Baris yang valid tetap bisa disimpan.
+          </p>
+        </div>
+      ) : null}
+
       {missingHeaders.length > 0 ? (
         <div className="mt-4 rounded-lg border border-line p-4">
           <p className="text-[13px] font-semibold text-neg">
@@ -165,10 +210,12 @@ export function DataUpload() {
           <p className="text-[13px] text-ink">
             <span className="font-semibold">{formatNumber(rows.length)} baris</span>{" "}
             valid siap disimpan
+            {totalRead !== null ? ` dari ${formatNumber(totalRead)} baris` : ""}
           </p>
           {errorRows.length > 0 ? (
             <p className="mt-1 text-[12px] text-warn">
-              {formatNumber(errorRows.length)} baris dilewati karena tidak valid.
+              {formatNumber(errorRows.length)} baris dilewati karena tidak
+              valid, detail di bawah.
             </p>
           ) : null}
           <div className="mt-3 overflow-x-auto">
@@ -214,10 +261,12 @@ export function DataUpload() {
         </div>
       ) : null}
 
-      {errorRows.length > 0 && rows === null ? (
+      {errorRows.length > 0 ? (
         <div className="mt-4 rounded-lg border border-line p-4">
           <p className="text-[13px] font-semibold text-neg">
-            Tidak ada baris valid
+            {rows && rows.length > 0
+              ? `${formatNumber(errorRows.length)} baris dilewati`
+              : "Tidak ada baris valid"}
           </p>
           <ul className="mt-2 flex flex-col gap-1">
             {errorRows.slice(0, 10).map((error) => (
