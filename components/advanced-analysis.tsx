@@ -144,17 +144,17 @@ export function AdvancedAnalysis({
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
-                      stroke="#e5e7eb"
+                      stroke="#e5e5e5"
                     />
                     <XAxis
                       dataKey="name"
-                      tick={{ fontSize: 11, fill: "#9ca3af" }}
-                      axisLine={{ stroke: "#e5e7eb" }}
+                      tick={{ fontSize: 11, fill: "#a3a3a3" }}
+                      axisLine={{ stroke: "#e5e5e5" }}
                       tickLine={false}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fontSize: 12, fill: "#9ca3af" }}
+                      tick={{ fontSize: 12, fill: "#a3a3a3" }}
                       axisLine={false}
                       tickLine={false}
                       width={40}
@@ -163,16 +163,16 @@ export function AdvancedAnalysis({
                       formatter={(value) =>
                         typeof value === "number" ? `${value} iterasi` : ""
                       }
-                      cursor={{ fill: "#f9fafb" }}
+                      cursor={{ fill: "#fafafa" }}
                       contentStyle={{
                         borderRadius: 8,
-                        border: "1px solid #e5e7eb",
+                        border: "1px solid #e5e5e5",
                         fontSize: 13,
                       }}
                     />
                     <Bar
                       dataKey="count"
-                      fill="#6366f1"
+                      fill="#171717"
                       radius={[6, 6, 0, 0]}
                       maxBarSize={48}
                     />

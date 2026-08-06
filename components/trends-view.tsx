@@ -123,16 +123,16 @@ export function TrendsView({
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#e5e7eb"
+                  stroke="#e5e5e5"
                 />
                 <XAxis
                   dataKey="month"
-                  tick={{ fontSize: 13, fill: "#6b7280" }}
-                  axisLine={{ stroke: "#e5e7eb" }}
+                  tick={{ fontSize: 13, fill: "#737373" }}
+                  axisLine={{ stroke: "#e5e5e5" }}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 12, fill: "#a3a3a3" }}
                   axisLine={false}
                   tickLine={false}
                   width={64}
@@ -146,7 +146,7 @@ export function TrendsView({
                   }
                   contentStyle={{
                     borderRadius: 8,
-                    border: "1px solid #e5e7eb",
+                    border: "1px solid #e5e5e5",
                     fontSize: 13,
                   }}
                 />
@@ -154,9 +154,9 @@ export function TrendsView({
                   type="monotone"
                   dataKey="revenue"
                   name="Omzet"
-                  stroke="#2563eb"
+                  stroke="#171717"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: "#2563eb", strokeWidth: 0 }}
+                  dot={{ r: 3, fill: "#171717", strokeWidth: 0 }}
                   activeDot={{ r: 5 }}
                 />
               </LineChart>

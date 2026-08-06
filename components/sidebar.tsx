@@ -54,7 +54,7 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${
                 isActive
-                  ? "bg-sidebar-active font-semibold text-sidebar-fg-active"
+                  ? "bg-sidebar-active font-semibold text-black"
                   : "text-sidebar-fg hover:text-sidebar-fg-active"
               }`}
             >

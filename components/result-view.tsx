@@ -88,16 +88,16 @@ export function ResultView({
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#e5e7eb"
+                  stroke="#e5e5e5"
                 />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 13, fill: "#6b7280" }}
-                  axisLine={{ stroke: "#e5e7eb" }}
+                  tick={{ fontSize: 13, fill: "#737373" }}
+                  axisLine={{ stroke: "#e5e5e5" }}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 12, fill: "#a3a3a3" }}
                   axisLine={false}
                   tickLine={false}
                   width={64}
@@ -109,10 +109,10 @@ export function ResultView({
                       ? formatMoney(value, currency)
                       : String(value ?? "")
                   }
-                  cursor={{ fill: "#f9fafb" }}
+                  cursor={{ fill: "#fafafa" }}
                   contentStyle={{
                     borderRadius: 8,
-                    border: "1px solid #e5e7eb",
+                    border: "1px solid #e5e5e5",
                     fontSize: 13,
                   }}
                 />
@@ -121,8 +121,8 @@ export function ResultView({
                   radius={[6, 6, 0, 0]}
                   maxBarSize={72}
                 >
-                  <Cell fill="#9ca3af" fillOpacity={0.4} />
-                  <Cell fill={profitUp ? "#16a34a" : "#dc2626"} />
+                  <Cell fill="#d4d4d4" fillOpacity={0.8} />
+                  <Cell fill={profitUp ? "#171717" : "#a3a3a3"} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
