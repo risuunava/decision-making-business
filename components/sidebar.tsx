@@ -50,7 +50,7 @@ export function Sidebar({
       >
         <div
           className={`flex items-center py-6 ${
-            open ? "px-4" : "flex-col gap-3"
+            open ? "px-4" : "flex-col gap-4"
           }`}
         >
           <Image
