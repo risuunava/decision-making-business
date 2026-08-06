@@ -11,10 +11,39 @@ import {
   monthlyVolume,
   summaryStats,
 } from "@/lib/analytics/trends";
+import {
+  estimateElasticity,
+  priceVolumePairs,
+  type ElasticityEstimate,
+} from "@/lib/statistics/elasticity";
+import { volumeChangeSeries } from "@/lib/statistics/monteCarlo";
 
 export const metadata: Metadata = { title: "Simulasi Baru | DecideFirst" };
 
 const MAX_FETCH = 2000;
+
+function computeAnalysis(
+  rows: { date: string; item_name: string; quantity: number; unit_price: number }[]
+): { elasticity: ElasticityEstimate | null; volumeChanges: number[] } {
+  let elasticity: ElasticityEstimate | null = null;
+  const pairs = priceVolumePairs(rows);
+  let topItem: string | null = null;
+  let topQuantity = 0;
+  for (const [itemName, itemPairs] of pairs) {
+    const total = itemPairs.reduce((sum, pair) => sum + pair.quantity, 0);
+    if (total > topQuantity) {
+      topQuantity = total;
+      topItem = itemName;
+    }
+  }
+  if (topItem) {
+    elasticity = estimateElasticity(topItem, pairs.get(topItem)!);
+  }
+  return {
+    elasticity,
+    volumeChanges: volumeChangeSeries(monthlyVolume(rows)),
+  };
+}
 
 export default async function SimulatePage() {
   const supabase = await createClient();
@@ -72,7 +101,10 @@ export default async function SimulatePage() {
           </Link>
         }
       />
-      <ScenarioForm currency={business.currency} />
+      <ScenarioForm
+        currency={business.currency}
+        analysis={computeAnalysis(rows)}
+      />
       <div className="grid gap-6 lg:grid-cols-2">
         <DataContextCard
           monthlyRevenue={stats.averageMonthlyRevenue > 0 ? stats.averageMonthlyRevenue : null}

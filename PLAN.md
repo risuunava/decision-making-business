@@ -139,27 +139,29 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 ### Langkah Kerja
 
 **3.1 — Deteksi Kelayakan Data**
-- Fungsi pengecek: apakah `pricing_history` user punya minimal 2-3 titik harga berbeda dengan data volume penjualan yang cukup?
-- Kalau tidak memenuhi syarat → fitur ini disembunyikan/disabled dengan pesan jelas kenapa (bukan error samar)
+- [x] Fungsi pengecek: apakah `pricing_history` user punya minimal 2-3 titik harga berbeda dengan data volume penjualan yang cukup?
+- [x] Kalau tidak memenuhi syarat → fitur ini disembunyikan/disabled dengan pesan jelas kenapa (bukan error samar)
 
 **3.2 — Estimasi Elastisitas (regresi linear sederhana)**
-- Implementasi regresi linear murni di TypeScript (tidak perlu Python/NumPy untuk kasus sederhana — bisa pakai formula least-squares manual atau library ringan seperti `simple-statistics`)
-- Tampilkan hasil dengan confidence yang jujur (mis. R² ditampilkan, bukan disembunyikan)
+- [x] Implementasi regresi linear murni di TypeScript (tidak perlu Python/NumPy untuk kasus sederhana — bisa pakai formula least-squares manual atau library ringan seperti `simple-statistics`)
+- [x] Tampilkan hasil dengan confidence yang jujur (mis. R² ditampilkan, bukan disembunyikan)
 
 **3.3 — Simulasi Probabilistik Ringan (Monte Carlo versi TS)**
-- Implementasi Monte Carlo sederhana di client-side/serverless function (loop random sampling berbasis distribusi dari data historis user)
-- Untuk skala kecil (ratusan–ribuan iterasi), ini tetap ringan dijalankan di Vercel serverless function tanpa biaya tambahan
-- Output: distribusi probabilitas profit (histogram), bukan angka tunggal
+- [x] Implementasi Monte Carlo sederhana di client-side/serverless function (loop random sampling berbasis distribusi dari data historis user)
+- [x] Untuk skala kecil (ratusan–ribuan iterasi), ini tetap ringan dijalankan di Vercel serverless function tanpa biaya tambahan
+- [x] Output: distribusi probabilitas profit (histogram), bukan angka tunggal
 
 **3.4 — Update UI Hasil Simulasi**
-- Untuk user yang datanya memenuhi syarat: tampilkan opsi "Simulasi Lanjutan (Probabilistik)" di samping hasil dasar Mode A
-- Untuk user yang belum: tetap dapat Mode A + Mode B dasar, tanpa merasa fitur "rusak"
+- [x] Untuk user yang datanya memenuhi syarat: tampilkan opsi "Simulasi Lanjutan (Probabilistik)" di samping hasil dasar Mode A
+- [x] Untuk user yang belum: tetap dapat Mode A + Mode B dasar, tanpa merasa fitur "rusak"
 
 ### Definition of Done
-- [ ] Sistem secara akurat mendeteksi kapan data user cukup untuk elastisitas/Monte Carlo
-- [ ] Estimasi elastisitas disertai indikator kepercayaan (bukan angka pasti tanpa konteks)
-- [ ] Monte Carlo berjalan tanpa menambah biaya infra (tetap di serverless function gratis Vercel)
-- [ ] Unit test untuk fungsi statistik (regresi, sampling)
+- [x] Sistem secara akurat mendeteksi kapan data user cukup untuk elastisitas/Monte Carlo
+- [x] Estimasi elastisitas disertai indikator kepercayaan (bukan angka pasti tanpa konteks)
+- [x] Monte Carlo berjalan tanpa menambah biaya infra (tetap di serverless function gratis Vercel)
+- [x] Unit test untuk fungsi statistik (regresi, sampling)
+
+Catatan implementasi: kelayakan diturunkan dari tabel `transactions` (harga rata-rata tertimbang per item per bulan), bukan `pricing_history`, karena tabel itu terisi natural dari transactions sesuai PRD §9. Elastisitas memakai regresi log-log (slope = elastisitas, R² = indikator kepercayaan) di `/lib/statistics/elasticity.ts`. Monte Carlo menyampling perubahan volume bulanan historis bisnis dan berlaku untuk skenario pricing di `/lib/statistics/monteCarlo.ts`.
 
 ---
 

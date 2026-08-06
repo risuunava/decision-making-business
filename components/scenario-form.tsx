@@ -8,9 +8,11 @@ import { scenarioSchema } from "@/lib/validation/scenarios";
 import { saveSimulation } from "@/lib/actions/simulation";
 import { SCENARIO_FIELDS, SCENARIO_DESCRIPTION } from "@/lib/scenario-fields";
 import { SCENARIO_LABEL } from "@/lib/constants";
+import type { ElasticityEstimate } from "@/lib/statistics/elasticity";
 import { Field } from "@/components/field";
 import { Button } from "@/components/button";
 import { ResultView } from "@/components/result-view";
+import { AdvancedAnalysis } from "@/components/advanced-analysis";
 
 const SCENARIO_TYPES: { type: ScenarioType; icon: typeof Tag }[] = [
   { type: "pricing", icon: Tag },
@@ -25,7 +27,13 @@ function emptyValues(type: ScenarioType): Record<string, string> {
   );
 }
 
-export function ScenarioForm({ currency }: { currency: string }) {
+export function ScenarioForm({
+  currency,
+  analysis,
+}: {
+  currency: string;
+  analysis: { elasticity: ElasticityEstimate | null; volumeChanges: number[] };
+}) {
   const [scenarioType, setScenarioType] = useState<ScenarioType>("pricing");
   const [values, setValues] = useState<Record<string, string>>(() =>
     emptyValues("pricing")
@@ -33,6 +41,7 @@ export function ScenarioForm({ currency }: { currency: string }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [banner, setBanner] = useState<string | null>(null);
   const [result, setResult] = useState<SimulationResult | null>(null);
+  const [input, setInput] = useState<ScenarioInput | null>(null);
   const [saveState, setSaveState] = useState<
     { success: boolean; message: string } | null
   >(null);
@@ -47,6 +56,7 @@ export function ScenarioForm({ currency }: { currency: string }) {
     setErrors({});
     setBanner(null);
     setResult(null);
+    setInput(null);
     setSaveState(null);
   }
 
@@ -90,6 +100,7 @@ export function ScenarioForm({ currency }: { currency: string }) {
     setErrors({});
     setBanner(null);
     const input = parsed.data as ScenarioInput;
+    setInput(input);
     setResult(calculateProfitImpact(input));
 
     startTransition(async () => {
@@ -171,8 +182,16 @@ export function ScenarioForm({ currency }: { currency: string }) {
       </div>
 
       {result ? (
-        <div ref={resultRef} className="scroll-mt-6">
+        <div ref={resultRef} className="flex scroll-mt-6 flex-col gap-6">
           <ResultView result={result} currency={currency} />
+          {input?.scenarioType === "pricing" ? (
+            <AdvancedAnalysis
+              elasticity={analysis.elasticity}
+              volumeChanges={analysis.volumeChanges}
+              currency={currency}
+              input={input}
+            />
+          ) : null}
         </div>
       ) : null}
     </div>

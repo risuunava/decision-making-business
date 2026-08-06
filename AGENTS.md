@@ -161,7 +161,7 @@ Update manual setiap phase selesai, sesuai Definition of Done di `PLAN.md`.
 - [x] Phase 0, setup dan fondasi proyek
 - [ ] Phase 1, MVP, Mode A, What-If Calculator (kode selesai, menunggu deploy Vercel oleh user)
 - [ ] Phase 2, data-driven ringan, Mode B awal, CSV upload, benchmark (kode selesai, menunggu migrasi 0002 dijalankan oleh user di Supabase)
-- [ ] Phase 3, statistik lanjutan, elastisitas, Monte Carlo, hanya untuk data yang layak
+- [ ] Phase 3, statistik lanjutan, elastisitas, Monte Carlo, hanya untuk data yang layak (kode selesai, menunggu deploy Vercel oleh user)
 - [ ] Phase 4, Smart Layer non-LLM, Template NLG lanjutan, decision tree, parsing input
 
 Checklist ini membantu AI agent tahu posisi project tanpa harus membaca ulang seluruh histori percakapan.
