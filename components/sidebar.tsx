@@ -7,7 +7,6 @@ import {
   FlaskConical,
   History,
   Database,
-  BarChart3,
   LogOut,
   type LucideIcon,
 } from "lucide-react";
@@ -24,10 +23,6 @@ const MENU: MenuItem[] = [
   { href: "/simulate", label: "Scenario Builder", icon: FlaskConical },
   { href: "/history", label: "Decision Log", icon: History },
   { href: "/data", label: "Data Bisnis", icon: Database },
-];
-
-const MENU_DISABLED: { label: string; icon: LucideIcon; note: string }[] = [
-  { label: "Insight & Benchmark", icon: BarChart3, note: "Phase 2+" },
 ];
 
 export function Sidebar({ userEmail }: { userEmail?: string }) {
@@ -63,23 +58,6 @@ export function Sidebar({ userEmail }: { userEmail?: string }) {
             </Link>
           );
         })}
-
-        <div className="mt-2 border-t border-line pt-2">
-          {MENU_DISABLED.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.label}
-                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-fg opacity-50"
-                title={`${item.label} tersedia di ${item.note}`}
-              >
-                <Icon size={18} strokeWidth={1.5} />
-                <span className="flex-1">{item.label}</span>
-                <span className="text-[11px]">{item.note}</span>
-              </div>
-            );
-          })}
-        </div>
       </nav>
 
       <div className="mt-auto border-t border-line px-4 py-4">
