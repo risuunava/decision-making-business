@@ -38,12 +38,14 @@ Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (
   --color-accent: #171717;         /* tombol utama, item aktif */
   --color-accent-hover: #000000;
 
-  /* Status semantik monokrom: makna dibawa label + icon, bukan hue */
-  --color-status-positive: #171717;  /* profit naik, strong = baik */
-  --color-status-negative: #737373;  /* profit turun, subdued */
-  --color-status-warning: #A3A3A3;   /* perlu perhatian */
-  --color-status-neutral: #525252;   /* proses berjalan */
-  --color-status-info: #171717;      /* status default */
+  /* Status semantik berwarna: satu-satunya pengecualian dari palet monokrom.
+     Nilai uang & status analisis (profit naik/turun, peringatan) wajib berwarna
+     agar cepat terbaca. Warna tetap align 1:1 dengan makna data. */
+  --color-status-positive: #16A34A;  /* profit naik, omzet naik */
+  --color-status-negative: #DC2626;  /* profit turun, omzet turun */
+  --color-status-warning: #D97706;   /* perlu perhatian, data belum cukup */
+  --color-status-neutral: #7C3AED;   /* proses berjalan */
+  --color-status-info: #2563EB;      /* status default */
 
   /* Sidebar (terang, konsisten dengan konten; item aktif pill hitam) */
   --color-sidebar-bg: #FFFFFF;
@@ -53,7 +55,7 @@ Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (
 }
 ```
 
-**Catatan soal status:** karena produk ini menjual kejujuran data, warna monokrom tidak boleh mengaburkan makna. "Profit Naik" selalu ditulis sebagai label eksplisit dengan icon `TrendingUp`, "Profit Turun" dengan `TrendingDown`. Warna hanya menegaskan level: hitam = kuat/positif, abu = melemah/negatif.
+**Catatan soal status:** warna status adalah satu-satunya pengecualian dari palet monokrom, dan hanya untuk makna data (profit naik = hijau, turun = merah, peringatan = amber). Warna harus selalu align 1:1 dengan makna, dan tetap disertai label teks eksplisit serta icon. Seluruh elemen lain (layout, border, teks, chart netral) tetap hitam-putih-abu.
 
 ### 2.2 Tipografi
 
@@ -213,7 +215,7 @@ Row list dengan border bawah tipis, hover `#F8F8F8`, klik menuju detail.
 Card insight dengan icon semantik (TrendingUp/TrendingDown/AlertTriangle/Info), teks `--text-body` `--color-text-primary`.
 
 ### 4.7 Chart
-Semua chart monokrom: grid `#E5E5E5`, ticks `#A3A3A3`, garis/bar utama `#171717`, bar sekunder `#D4D4D4`, cursor tooltip `#FAFAFA`. Profit naik vs turun dibedakan level keabuan + label.
+Chart monokrom untuk data netral (tren omzet, histogram distribusi): grid `#E5E5E5`, ticks `#A3A3A3`, garis/bar utama `#171717`, bar sekunder `#D4D4D4`, cursor tooltip `#FAFAFA`. Bar hasil simulasi memakai warna status: hijau jika profit naik, merah jika turun.
 
 ---
 
@@ -251,7 +253,7 @@ Card upload CSV, preview, tren omzet (line chart hitam), item terlaris.
 
 ## 8. Yang Sengaja Dihindari
 
-- ❌ Semua warna non-monokrom: gradient, neon, glassmorphism, shadow tebal.
+- ❌ Semua warna non-monokrom untuk elemen dekoratif: gradient, neon, glassmorphism, shadow tebal. Satu-satunya warna yang boleh ada adalah status semantik §2.1.
 - ❌ Animasi berlebihan; transisi hanya untuk hover/focus.
 - ❌ Lebih dari satu kata serif miring per judul.
 - ❌ Dark mode kedua: tidak ada area gelap sama sekali, sidebar ikut terang (monokrom penuh).

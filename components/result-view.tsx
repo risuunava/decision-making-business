@@ -122,7 +122,7 @@ export function ResultView({
                   maxBarSize={72}
                 >
                   <Cell fill="#d4d4d4" fillOpacity={0.8} />
-                  <Cell fill={profitUp ? "#171717" : "#a3a3a3"} />
+                  <Cell fill={profitUp ? "#16a34a" : "#dc2626"} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>

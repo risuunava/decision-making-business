@@ -16,12 +16,12 @@
   --color-accent: #171717;
   --color-accent-hover: #000000;
 
-  /* Status semantik monokrom, makna dibawa label + icon */
-  --color-status-positive: #171717;
-  --color-status-negative: #737373;
-  --color-status-warning: #a3a3a3;
-  --color-status-neutral: #525252;
-  --color-status-info: #171717;
+  /* Status semantik berwarna: nilai uang & status analisis, agar cepat terbaca */
+  --color-status-positive: #16a34a;
+  --color-status-negative: #dc2626;
+  --color-status-warning: #d97706;
+  --color-status-neutral: #7c3aed;
+  --color-status-info: #2563eb;
 
   /* Sidebar (terang, konsisten dengan konten; item aktif pill hitam) */
   --color-sidebar-bg: #ffffff;
