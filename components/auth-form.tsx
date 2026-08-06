@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Image from "next/image";
 import { signIn, signUp } from "@/lib/actions/auth";
 import type { AuthActionResult } from "@/lib/actions/auth";
 import { Field } from "@/components/field";
@@ -34,11 +35,15 @@ export function AuthForm({
 
   return (
     <div className="rounded-xl border border-line bg-card p-6 shadow-card sm:p-8">
-      <div className="mb-6">
-        <p className="text-[13px] font-semibold uppercase tracking-wide text-primary">
-          DecideFirst
-        </p>
-        <h2 className="mt-2 text-[20px] font-semibold text-ink">
+      <div className="mb-6 flex flex-col items-center gap-2 text-center">
+        <Image
+          src="/assets/dflogo.png"
+          alt="DecideFirst"
+          width={32}
+          height={32}
+          priority
+        />
+        <h2 className="text-[20px] font-semibold text-ink">
           {mode === "login" ? "Masuk" : "Daftar Akun Baru"}
         </h2>
         <p className="mt-1 text-[13px] text-sub">

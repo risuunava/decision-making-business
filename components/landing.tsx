@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   BarChart3,
   Calculator,
@@ -179,8 +180,17 @@ export function Landing() {
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-app/95">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="text-[15px] font-semibold tracking-tight text-ink">
-            DecideFirst
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/assets/dflogo.png"
+              alt="DecideFirst"
+              width={28}
+              height={28}
+              priority
+            />
+            <span className="text-[15px] font-semibold tracking-tight text-ink">
+              DecideFirst
+            </span>
           </Link>
           <nav className="hidden items-center gap-8 sm:flex">
             <Link
@@ -308,7 +318,15 @@ export function Landing() {
 
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8">
-          <p className="text-[13px] font-semibold text-ink">DecideFirst</p>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/assets/dflogo.png"
+              alt="DecideFirst"
+              width={20}
+              height={20}
+            />
+            <p className="text-[13px] font-semibold text-ink">DecideFirst</p>
+          </div>
           <p className="text-[12px] text-neutral-400">
             Think before you act, with data.
           </p>
