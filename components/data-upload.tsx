@@ -23,7 +23,7 @@ const TEMPLATE_SAMPLE = [
   "7000",
 ];
 
-export function DataUpload() {
+export function DataUpload({ existingCount }: { existingCount: number }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<CsvTransactionRow[] | null>(null);
@@ -37,6 +37,7 @@ export function DataUpload() {
   const [isParsing, setIsParsing] = useState(false);
   const [parseErrors, setParseErrors] = useState<string[]>([]);
   const [totalRead, setTotalRead] = useState<number | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   function downloadTemplate() {
     const content = [
@@ -60,6 +61,7 @@ export function DataUpload() {
     setMissingHeaders([]);
     setParseErrors([]);
     setTotalRead(null);
+    setConfirming(false);
     setIsParsing(true);
 
     Papa.parse<Record<string, unknown>>(file, {
@@ -95,6 +97,10 @@ export function DataUpload() {
 
   function confirmSave() {
     if (!rows || rows.length === 0) return;
+    if (existingCount > 0 && !confirming) {
+      setConfirming(true);
+      return;
+    }
     startTransition(async () => {
       const result = await saveTransactions(rows);
       setBanner(result);
@@ -105,6 +111,7 @@ export function DataUpload() {
         setParseErrors([]);
         setTotalRead(null);
         setFileName(null);
+        setConfirming(false);
         if (fileRef.current) fileRef.current.value = "";
         router.refresh();
       }
@@ -248,11 +255,32 @@ export function DataUpload() {
               </p>
             ) : null}
           </div>
-          <Button onClick={confirmSave} disabled={isPending} className="mt-4">
-            {isPending
-              ? "Menyimpan..."
-              : `Simpan ${formatNumber(rows.length)} Baris`}
-          </Button>
+          {confirming ? (
+            <div className="mt-4 flex flex-col gap-3 rounded-lg border border-warn p-4">
+              <p className="text-[13px] text-ink">
+                Data lama akan dihapus: {formatNumber(existingCount)} baris
+                transaksi tersimpan akan diganti oleh{" "}
+                {formatNumber(rows.length)} baris baru.
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => setConfirming(false)}
+                  variant="secondary"
+                >
+                  Batal
+                </Button>
+                <Button onClick={confirmSave} disabled={isPending}>
+                  {isPending ? "Menyimpan..." : "Ya, Ganti Data Lama"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button onClick={confirmSave} disabled={isPending} className="mt-4">
+              {isPending
+                ? "Menyimpan..."
+                : `Simpan ${formatNumber(rows.length)} Baris`}
+            </Button>
+          )}
         </div>
       ) : null}
 

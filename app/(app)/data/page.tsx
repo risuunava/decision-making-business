@@ -63,7 +63,7 @@ export default async function DataPage() {
         description="Unggah transaksi untuk melihat tren omzet. Data tidak dipakai untuk prediksi otomatis."
       />
 
-      <DataUpload />
+      <DataUpload existingCount={rows.length} />
 
       {rows.length > 0 ? (
         <TrendsView
