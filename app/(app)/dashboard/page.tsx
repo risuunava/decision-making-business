@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, fetchAllTransactions } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/page-header";
 import { buttonClasses } from "@/components/button";
 import { SimulationRow } from "@/components/simulation-row";
@@ -54,11 +54,10 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false })
     .limit(5);
 
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("date, quantity, unit_price")
-    .eq("business_id", business.id)
-    .limit(5000);
+  const transactions = await fetchAllTransactions(
+    business.id,
+    "date, quantity, unit_price"
+  );
 
   const transactionRows = (transactions ?? []).map((transaction) => ({
     date: transaction.date as string,

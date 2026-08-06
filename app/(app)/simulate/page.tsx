@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, fetchAllTransactions } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/page-header";
 import { buttonClasses } from "@/components/button";
 import { ScenarioForm } from "@/components/scenario-form";
@@ -19,8 +19,6 @@ import {
 import { volumeChangeSeries } from "@/lib/statistics/monteCarlo";
 
 export const metadata: Metadata = { title: "Simulasi Baru | DecideFirst" };
-
-const MAX_FETCH = 2000;
 
 function computeAnalysis(
   rows: { date: string; item_name: string; quantity: number; unit_price: number }[]
@@ -65,11 +63,10 @@ export default async function SimulatePage() {
     redirect("/onboarding");
   }
 
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("date, item_name, quantity, unit_price")
-    .eq("business_id", business.id)
-    .limit(MAX_FETCH);
+  const transactions = await fetchAllTransactions(
+    business.id,
+    "date, item_name, quantity, unit_price"
+  );
 
   const rows = (transactions ?? []).map((transaction) => ({
     date: transaction.date as string,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, fetchAllTransactions } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/page-header";
 import { DataUpload } from "@/components/data-upload";
 import { TrendsView } from "@/components/trends-view";
@@ -12,8 +12,6 @@ import {
 } from "@/lib/analytics/trends";
 
 export const metadata: Metadata = { title: "Data Bisnis | DecideFirst" };
-
-const MAX_FETCH = 5000;
 
 export default async function DataPage() {
   const supabase = await createClient();
@@ -35,12 +33,10 @@ export default async function DataPage() {
     redirect("/onboarding");
   }
 
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("id, date, item_name, quantity, unit_price, cost_per_unit")
-    .eq("business_id", business.id)
-    .order("date", { ascending: false })
-    .limit(MAX_FETCH);
+  const transactions = await fetchAllTransactions(
+    business.id,
+    "id, date, item_name, quantity, unit_price, cost_per_unit"
+  );
 
   const rows = (transactions ?? []).map((transaction) => ({
     date: transaction.date as string,
