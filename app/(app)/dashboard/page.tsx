@@ -7,8 +7,13 @@ import { buttonClasses } from "@/components/button";
 import { SimulationRow } from "@/components/simulation-row";
 import {
   BUSINESS_TYPE_LABEL,
+  formatMoney,
   formatNumber,
 } from "@/lib/constants";
+import {
+  monthlyRevenue,
+  revenueGrowthPercent,
+} from "@/lib/analytics/trends";
 
 export const metadata: Metadata = { title: "Dashboard | DecideFirst" };
 
@@ -49,6 +54,26 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false })
     .limit(5);
 
+  const { data: transactions } = await supabase
+    .from("transactions")
+    .select("date, quantity, unit_price")
+    .eq("business_id", business.id)
+    .limit(5000);
+
+  const transactionRows = (transactions ?? []).map((transaction) => ({
+    date: transaction.date as string,
+    quantity: Number(transaction.quantity),
+    unit_price: Number(transaction.unit_price),
+  }));
+  const monthly = monthlyRevenue(transactionRows);
+  const trendGrowth =
+    monthly.length >= 2
+      ? revenueGrowthPercent(
+          monthly[monthly.length - 1].revenue,
+          monthly[monthly.length - 2].revenue
+        )
+      : null;
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -82,6 +107,38 @@ export default async function DashboardPage() {
           {formatNumber(monthlyCount ?? 0)}
         </p>
       </div>
+
+      {monthly.length > 0 ? (
+        <div className="rounded-xl border border-line bg-card p-6 shadow-card">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-[20px] font-semibold text-ink">Tren Omzet</h2>
+              <p className="mt-1 text-[13px] text-sub">
+                Ringkasan dari data transaksi Anda.
+              </p>
+            </div>
+            {trendGrowth !== null ? (
+              <span
+                className={`text-[13px] font-semibold ${
+                  trendGrowth >= 0 ? "text-pos" : "text-neg"
+                }`}
+              >
+                {trendGrowth >= 0 ? "Naik" : "Turun"}{" "}
+                {formatNumber(Math.abs(trendGrowth), 1)}% bulan terakhir
+              </span>
+            ) : null}
+          </div>
+          <p className="mt-4 text-[24px] font-semibold text-ink">
+            {formatMoney(
+              monthly[monthly.length - 1].revenue,
+              business.currency
+            )}
+          </p>
+          <p className="mt-1 text-[12px] text-muted">
+            Omzet pada bulan data terakhir ({monthly[monthly.length - 1].month}).
+          </p>
+        </div>
+      ) : null}
 
       <div className="rounded-xl border border-line bg-card p-6 shadow-card">
         <div className="flex items-center justify-between">

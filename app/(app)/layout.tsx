@@ -7,6 +7,7 @@ const MOBILE_NAV = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/simulate", label: "Simulasi" },
   { href: "/history", label: "Riwayat" },
+  { href: "/data", label: "Data" },
 ];
 
 export default async function AppLayout({

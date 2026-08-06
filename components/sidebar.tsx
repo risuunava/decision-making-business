@@ -23,10 +23,10 @@ const MENU: MenuItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/simulate", label: "Scenario Builder", icon: FlaskConical },
   { href: "/history", label: "Decision Log", icon: History },
+  { href: "/data", label: "Data Bisnis", icon: Database },
 ];
 
 const MENU_DISABLED: { label: string; icon: LucideIcon; note: string }[] = [
-  { label: "Data Bisnis", icon: Database, note: "Phase 2" },
   { label: "Insight & Benchmark", icon: BarChart3, note: "Phase 2+" },
 ];
 
