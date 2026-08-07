@@ -36,9 +36,9 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
    - Pastikan environment variables (Supabase keys) juga diset di dashboard Vercel, bukan cuma lokal
 
 ### Definition of Done
-- [ ] `npm run dev` jalan lokal tanpa error
-- [ ] Push ke GitHub → otomatis ter-deploy ke Vercel (cek URL `*.vercel.app` bisa diakses)
-- [ ] Koneksi ke Supabase berhasil (test query sederhana, misal `select 1`)
+- [x] `npm run dev` jalan lokal tanpa error
+- [x] Push ke GitHub → otomatis ter-deploy ke Vercel (cek URL `*.vercel.app` bisa diakses)
+- [x] Koneksi ke Supabase berhasil (test query sederhana, misal `select 1`)
 
 ---
 
@@ -93,7 +93,7 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 - [x] User bisa membuat simulasi di keempat jenis skenario (pricing/discount/staffing/inventory)
 - [x] Hasil kalkulasi benar secara matematis (**wajib ada unit test** untuk tiap fungsi di simulation engine — ini paling kritikal karena salah hitung = user ambil keputusan salah)
 - [x] Insight rule-based dasar muncul dan masuk akal
-- [ ] Deploy production di Vercel, bisa diakses publik (manual, perlu user)
+- [x] Deploy production di Vercel, bisa diakses publik (manual, perlu user)
 
 ---
 

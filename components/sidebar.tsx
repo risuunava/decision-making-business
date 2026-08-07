@@ -3,30 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  FlaskConical,
-  History,
-  Database,
-  LogOut,
-  PanelLeft,
-  PanelRight,
-  type LucideIcon,
-} from "lucide-react";
+import { LogOut, PanelLeft, PanelRight } from "lucide-react";
+import { MENU } from "@/components/nav-items";
 import { signOut } from "@/lib/actions/auth";
-
-interface MenuItem {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-}
-
-const MENU: MenuItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/simulate", label: "Scenario Builder", icon: FlaskConical },
-  { href: "/history", label: "Decision Log", icon: History },
-  { href: "/data", label: "Data Bisnis", icon: Database },
-];
 
 export function Sidebar({
   open,
