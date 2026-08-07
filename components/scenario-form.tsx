@@ -1,13 +1,21 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import type { FormEvent } from "react";
 import { BadgePercent, Package, Tag, Users } from "lucide-react";
-import type { ScenarioInput, ScenarioType, SimulationResult } from "@/types";
+import type {
+  BusinessType,
+  ScenarioInput,
+  ScenarioType,
+  SimulationResult,
+} from "@/types";
 import { calculateProfitImpact } from "@/lib/simulation/engine";
 import { scenarioSchema } from "@/lib/validation/scenarios";
 import { saveSimulation } from "@/lib/actions/simulation";
 import { SCENARIO_FIELDS, SCENARIO_DESCRIPTION } from "@/lib/scenario-fields";
 import { SCENARIO_LABEL } from "@/lib/constants";
+import { parseNaturalInput } from "@/lib/recommendations/naturalInput";
+import { buildRecommendations } from "@/lib/recommendations/decisionTree";
 import type { ElasticityEstimate } from "@/lib/statistics/elasticity";
 import { Field } from "@/components/field";
 import { Button } from "@/components/button";
@@ -29,9 +37,11 @@ function emptyValues(type: ScenarioType): Record<string, string> {
 
 export function ScenarioForm({
   currency,
+  businessType,
   analysis,
 }: {
   currency: string;
+  businessType: BusinessType;
   analysis: { elasticity: ElasticityEstimate | null; volumeChanges: number[] };
 }) {
   const [scenarioType, setScenarioType] = useState<ScenarioType>("pricing");
@@ -42,6 +52,8 @@ export function ScenarioForm({
   const [banner, setBanner] = useState<string | null>(null);
   const [result, setResult] = useState<SimulationResult | null>(null);
   const [input, setInput] = useState<ScenarioInput | null>(null);
+  const [query, setQuery] = useState("");
+  const [queryHint, setQueryHint] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<
     { success: boolean; message: string } | null
   >(null);
@@ -58,6 +70,22 @@ export function ScenarioForm({
     setResult(null);
     setInput(null);
     setSaveState(null);
+  }
+
+  function applyQuery(event: FormEvent) {
+    event.preventDefault();
+    const parsed = parseNaturalInput(query);
+    if (!parsed) {
+      setQueryHint("Pola tidak dikenali. Isi langsung di form di bawah ini.");
+      return;
+    }
+    setQueryHint(null);
+    switchType(parsed.scenarioType);
+    const prefilled: Record<string, string> = {};
+    for (const [name, value] of Object.entries(parsed.values)) {
+      prefilled[name] = String(value);
+    }
+    setValues({ ...emptyValues(parsed.scenarioType), ...prefilled });
   }
 
   function setValue(name: string, value: string) {
@@ -121,6 +149,30 @@ export function ScenarioForm({
         <h2 className="text-[20px] font-semibold text-ink">Buat Simulasi Baru</h2>
         <p className="mt-1 text-[13px] text-sub">{SCENARIO_DESCRIPTION[scenarioType]}</p>
 
+        <form onSubmit={applyQuery} className="mt-4">
+          <div className="flex flex-wrap items-end gap-2">
+            <div className="min-w-[280px] flex-1">
+              <Field
+                name="quick-input"
+                label="Ketik Cepat"
+                placeholder='contoh: "diskon 10%" atau "harga 100.000 jadi 120.000"'
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="secondary">
+              Terapkan
+            </Button>
+          </div>
+          <p className="mt-1 text-[12px] text-muted">
+            Pola yang dikenali: diskon X%, naikkan harga, harga A jadi B, tambah
+            pegawai, stok turun X%.
+          </p>
+          {queryHint ? (
+            <p className="mt-1 text-[12px] text-warn">{queryHint}</p>
+          ) : null}
+        </form>
+
         <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
           {SCENARIO_TYPES.map(({ type, icon: Icon }) => {
             const isActive = scenarioType === type;
@@ -174,10 +226,14 @@ export function ScenarioForm({
         </form>
       </div>
 
-      {result ? (
+      {result && input ? (
         <div ref={resultRef} className="flex scroll-mt-6 flex-col gap-6">
-          <ResultView result={result} currency={currency} />
-          {input?.scenarioType === "pricing" ? (
+          <ResultView
+            result={result}
+            currency={currency}
+            recommendations={buildRecommendations(result, businessType, input)}
+          />
+          {input.scenarioType === "pricing" ? (
             <AdvancedAnalysis
               elasticity={analysis.elasticity}
               volumeChanges={analysis.volumeChanges}

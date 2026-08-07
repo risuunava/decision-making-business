@@ -15,11 +15,13 @@ import {
   TrendingDown,
   AlertTriangle,
   Info,
+  Lightbulb,
   type LucideIcon,
 } from "lucide-react";
 import type { SimulationResult } from "@/types";
 import { buildInsights } from "@/lib/insights/templates";
 import type { InsightTone } from "@/lib/insights/templates";
+import type { Recommendation } from "@/lib/recommendations/decisionTree";
 import { formatCompactNumber, formatMoney, formatNumber } from "@/lib/constants";
 
 const TONE_META: Record<
@@ -51,12 +53,38 @@ function Metric({
   );
 }
 
+function InsightRow({
+  tone,
+  text,
+  reason,
+}: {
+  tone: InsightTone;
+  text: string;
+  reason?: string;
+}) {
+  const toneMeta = TONE_META[tone];
+  const Icon = toneMeta.icon;
+  return (
+    <li className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0">
+      <Icon size={18} className={`mt-0.5 shrink-0 ${toneMeta.className}`} />
+      <div className="flex flex-col gap-0.5">
+        <p className="text-[13px] leading-6 text-ink">{text}</p>
+        {reason ? (
+          <p className="text-[12px] leading-5 text-muted">{reason}</p>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
 export function ResultView({
   result,
   currency,
+  recommendations = [],
 }: {
   result: SimulationResult;
   currency: string;
+  recommendations?: Recommendation[];
 }) {
   const profitUp = result.profitChange >= 0;
   const showMargin =
@@ -165,21 +193,37 @@ export function ResultView({
           Analisis otomatis dari angka asumsi yang Anda masukkan.
         </p>
         <ul className="mt-4 flex flex-col gap-3">
-          {insights.map((insight, index) => {
-            const tone = TONE_META[insight.tone];
-            const Icon = tone.icon;
-            return (
-              <li
-                key={index}
-                className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0"
-              >
-                <Icon size={18} className={`mt-0.5 shrink-0 ${tone.className}`} />
-                <p className="text-[13px] leading-6 text-ink">{insight.text}</p>
-              </li>
-            );
-          })}
+          {insights.map((insight, index) => (
+            <InsightRow
+              key={index}
+              tone={insight.tone}
+              text={insight.text}
+            />
+          ))}
         </ul>
       </div>
+
+      {recommendations.length > 0 ? (
+        <div className="rounded-xl border border-line bg-card p-6 shadow-card">
+          <div className="flex items-center gap-2">
+            <Lightbulb size={18} className="text-primary" />
+            <h2 className="text-[16px] font-semibold text-ink">Rekomendasi</h2>
+          </div>
+          <p className="mt-1 text-[12px] text-sub">
+            Berdasarkan analisis skenario Anda dan pola umum industri.
+          </p>
+          <ul className="mt-4 flex flex-col gap-3">
+            {recommendations.map((recommendation, index) => (
+              <InsightRow
+                key={index}
+                tone={recommendation.tone}
+                text={recommendation.text}
+                reason={recommendation.reason}
+              />
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }

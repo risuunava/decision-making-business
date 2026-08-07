@@ -172,24 +172,26 @@ Catatan implementasi: kelayakan diturunkan dari tabel `transactions` (harga rata
 ### Langkah Kerja
 
 **4.1 — Perluasan Template NLG**
-- Ekspansi `/lib/insights/templates.ts` dari Phase 1: tambah variasi kalimat per kondisi (beberapa versi per skenario, dipilih kontekstual agar tidak terasa berulang)
-- Kategorikan template per jenis skenario (pricing/discount/staffing/inventory) x per hasil (positif/negatif/netral)
+- [x] Ekspansi `/lib/insights/templates.ts` dari Phase 1: tambah variasi kalimat per kondisi (beberapa versi per skenario, dipilih kontekstual agar tidak terasa berulang)
+- [x] Kategorikan template per jenis skenario (pricing/discount/staffing/inventory) x per hasil (positif/negatif/netral)
 
 **4.2 — Decision Tree Kurasi Manual**
-- Riset domain (F&B/retail UMKM) untuk menyusun logika rekomendasi eksplisit
-- Implementasi sebagai struktur kondisional bertingkat di `/lib/recommendations/decisionTree.ts` — bukan black box, setiap cabang logika didokumentasikan alasannya
-- Contoh cabang: margin rendah + kompetitor lebih murah → rekomendasi efisiensi biaya dulu
+- [x] Riset domain (F&B/retail UMKM) untuk menyusun logika rekomendasi eksplisit
+- [x] Implementasi sebagai struktur kondisional bertingkat di `/lib/recommendations/decisionTree.ts` — bukan black box, setiap cabang logika didokumentasikan alasannya
+- [x] Contoh cabang: margin rendah + kompetitor lebih murah → rekomendasi efisiensi biaya dulu
 
 **4.3 — Parsing Input Semi-Natural**
-- Untuk fitur "ketik skenario dalam kalimat" (opsional, enhancement UX): regex pattern matching untuk pola kalimat umum ("naikkan harga X%", "diskon Y%")
-- Fuzzy matching ringan (`Fuse.js`) untuk toleransi typo/variasi kata
-- Fallback: kalau pola tidak dikenali, arahkan user ke Scenario Builder form biasa (bukan error)
+- [x] Untuk fitur "ketik skenario dalam kalimat" (opsional, enhancement UX): regex pattern matching untuk pola kalimat umum ("naikkan harga X%", "diskon Y%")
+- [~] Fuzzy matching ringan (`Fuse.js`) untuk toleransi typo/variasi kata — **ditunda**: regex sudah menutupi pola yang ditest, fallback graceful ada. Tambah Fuse.js saat typo benar-benar jadi masalah nyata
+- [x] Fallback: kalau pola tidak dikenali, arahkan user ke Scenario Builder form biasa (bukan error)
 
 ### Definition of Done
-- [ ] Insight terasa variatif, tidak berulang secara mencolok
-- [ ] Decision tree terdokumentasi jelas (setiap rule ada alasan bisnisnya)
-- [ ] Parsing input semi-natural berhasil untuk pola-pola umum yang ditest, fallback graceful untuk yang tidak dikenali
-- [ ] Tidak ada panggilan API eksternal di seluruh Smart Layer — audit codebase untuk pastikan
+- [x] Insight terasa variatif, tidak berulang secara mencolok
+- [x] Decision tree terdokumentasi jelas (setiap rule ada alasan bisnisnya)
+- [x] Parsing input semi-natural berhasil untuk pola-pola umum yang ditest, fallback graceful untuk yang tidak dikenali
+- [x] Tidak ada panggilan API eksternal di seluruh Smart Layer — audit codebase untuk pastikan
+
+Catatan implementasi: variasi insight dipilih deterministik dari urutan skenario (bukan acak) supaya tetap bisa di-unit-test. Decision tree menerima `SimulationResult` + `businessType` + `ScenarioInput` (butuh nilai asumsi seperti `volumeChangePercent`, bukan hanya hasil), dan memakai rentang margin benchmark dari `/lib/data/benchmarks.ts` sebagai proksi kondisi industri. Parser di `/lib/recommendations/naturalInput.ts` memakai `parseNumberInput` yang sudah ada di validation, tanpa dependency baru.
 
 ---
 

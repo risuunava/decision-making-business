@@ -34,7 +34,7 @@ export interface SummaryStats {
   averageMonthlyRevenue: number;
 }
 
-export function monthKey(date: string): string {
+function monthKey(date: string): string {
   return date.slice(0, 7);
 }
 

@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ResultView } from "@/components/result-view";
+import { buildRecommendations } from "@/lib/recommendations/decisionTree";
 import { SCENARIO_FIELDS } from "@/lib/scenario-fields";
 import {
   SCENARIO_LABEL,
@@ -101,7 +102,15 @@ export default async function SimulationDetailPage({
         </dl>
       </div>
 
-      <ResultView result={simulation.result} currency={business.currency} />
+      <ResultView
+        result={simulation.result}
+        currency={business.currency}
+        recommendations={buildRecommendations(
+          simulation.result,
+          business.business_type,
+          simulation.input_params
+        )}
+      />
     </div>
   );
 }
