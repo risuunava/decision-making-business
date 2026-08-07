@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/sidebar";
+import { BottomNav } from "@/components/bottom-nav";
 
 export function AppShell({
   children,
@@ -20,10 +21,11 @@ export function AppShell({
         userEmail={userEmail}
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="w-full flex-1 px-5 py-8">
+        <main className="w-full flex-1 px-5 pb-24 pt-8 md:pb-8">
           {children}
         </main>
       </div>
+      <BottomNav />
     </div>
   );
 }
