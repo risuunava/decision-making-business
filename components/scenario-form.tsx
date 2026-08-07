@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { BadgePercent, Package, Tag, Users } from "lucide-react";
 import type { ScenarioInput, ScenarioType, SimulationResult } from "@/types";
 import { calculateProfitImpact } from "@/lib/simulation/engine";
@@ -48,7 +48,7 @@ export function ScenarioForm({
   const [isPending, startTransition] = useTransition();
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const fields = useMemo(() => SCENARIO_FIELDS[scenarioType], [scenarioType]);
+  const fields = SCENARIO_FIELDS[scenarioType];
 
   function switchType(type: ScenarioType) {
     setScenarioType(type);
@@ -154,14 +154,7 @@ export function ScenarioForm({
                 type="number"
                 inputMode="decimal"
                 step="any"
-                min={
-                  field.name === "volumeChangePercent"
-                    ? -99.99
-                    : field.name === "stockChangePercent" ||
-                        field.name === "salesChangePercent"
-                      ? -100
-                      : 0
-                }
+                min={field.min ?? 0}
                 value={values[field.name]}
                 onChange={(event) => setValue(field.name, event.target.value)}
               />

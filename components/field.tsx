@@ -7,6 +7,34 @@ import type {
 const inputClasses =
   "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm text-ink placeholder:text-muted transition-colors duration-150 focus:border-primary focus:outline-none";
 
+function FieldWrapper({
+  label,
+  name,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  name?: string;
+  hint?: string;
+  error?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={name} className="text-[13px] text-sub">
+        {label}
+      </label>
+      {children}
+      {error ? (
+        <p className="text-[12px] text-neg">{error}</p>
+      ) : hint ? (
+        <p className="text-[12px] text-muted">{hint}</p>
+      ) : null}
+    </div>
+  );
+}
+
 export function Field({
   label,
   hint,
@@ -18,17 +46,9 @@ export function Field({
   error?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={props.name} className="text-[13px] text-sub">
-        {label}
-      </label>
+    <FieldWrapper label={label} name={props.name} hint={hint} error={error}>
       <input id={props.name} className={inputClasses} {...props} />
-      {error ? (
-        <p className="text-[12px] text-neg">{error}</p>
-      ) : hint ? (
-        <p className="text-[12px] text-muted">{hint}</p>
-      ) : null}
-    </div>
+    </FieldWrapper>
   );
 }
 
@@ -45,18 +65,10 @@ export function SelectField({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={props.name} className="text-[13px] text-sub">
-        {label}
-      </label>
+    <FieldWrapper label={label} name={props.name} hint={hint} error={error}>
       <select id={props.name} className={inputClasses} {...props}>
         {children}
       </select>
-      {error ? (
-        <p className="text-[12px] text-neg">{error}</p>
-      ) : hint ? (
-        <p className="text-[12px] text-muted">{hint}</p>
-      ) : null}
-    </div>
+    </FieldWrapper>
   );
 }
