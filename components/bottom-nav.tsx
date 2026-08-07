@@ -29,7 +29,7 @@ export function BottomNav() {
               }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
-              {item.label}
+              {item.mobileLabel ?? item.label}
             </Link>
           );
         })}
