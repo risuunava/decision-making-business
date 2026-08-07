@@ -11,6 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "DecideFirst",
   description: "Simulasi dampak keputusan bisnis sebelum dieksekusi",
+  icons: { icon: "/assets/dflogo.png" },
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 # DESIGN.md
 
-Dokumen ini adalah spesifikasi UI/UX untuk DecideFirst. Referensi gaya: dashboard clean SaaS bergaya seperti TripSunnah (sidebar kiri, card putih dengan border tipis, tipografi tegas, aksen warna minimal, banyak whitespace).
+Dokumen ini adalah spesifikasi UI/UX untuk DecideFirst. Referensi gaya: dashboard SaaS monokrom bergaya Linear.app / Vercel (bento grid, border netral dengan cross-dot di persimpangan, tipografi tegas, tanpa warna selain hitam-putih-abu).
 
 Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (struktur sistem).
 
@@ -8,74 +8,78 @@ Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (
 
 ## 1. Prinsip Desain
 
-1. **Clean & tidak ramai** — whitespace generous, satu fokus per section, tidak ada dekorasi yang tidak fungsional.
-2. **Data harus terasa terpercaya** — tipografi tegas untuk angka penting, warna status yang konsisten dan bermakna (bukan sekadar estetika), tidak ada elemen yang membuat angka terasa "dibesar-besarkan."
-3. **Card-based layout** — setiap unit fungsional (form, riwayat, FAQ) dibungkus card putih dengan border tipis, bukan shadow berat.
-4. **Sidebar navigasi persisten** — struktur menu kiri konsisten di semua halaman, memudahkan orientasi.
-5. **Progressive disclosure** — sesuai prinsip di PRD, fitur lanjutan (Phase 2/3) tidak boleh terasa membebani UI Phase 1 yang sederhana.
+1. **Monokrom murni** — hitam, putih, dan abu-abu adalah satu-satunya warna. Tidak ada aksen biru, hijau, atau warna lain. Diferensiasi visual dilakukan lewat bobot tipografi, icon, dan level keabuan, bukan hue.
+2. **Bento grid & border system** — komponen disusun dalam grid kartu dengan garis border netral sebagai pemisah; titik plus/cross-dot menghiasi setiap persimpangan grid (ala Linear). Sudut kartu `rounded-xl` sampai `rounded-2xl`.
+3. **Clean & tidak ramai** — whitespace generous, satu fokus per section, tanpa dekorasi yang tidak fungsional.
+4. **Data harus terasa terpercaya** — tipografi tegas untuk angka penting. Status (naik/turun/peringatan) dibawa oleh label teks eksplisit dan icon, karena warna tidak lagi bisa membedakan makna.
+5. **Sidebar navigasi persisten** — struktur menu kiri konsisten di semua halaman ber-login.
+6. **Progressive disclosure** — fitur lanjutan (Phase 2/3) tidak boleh membebani UI Phase 1.
 
 ---
 
 ## 2. Design Tokens
 
-### 2.1 Warna
+### 2.1 Warna (Monochrome)
 
 ```css
 :root {
   /* Base */
-  --color-bg-app: #F3F4F6;        /* background di luar card, abu sangat muda */
+  --color-bg-app: #F8F8F8;        /* background utama, off-white sangat lembut */
   --color-bg-card: #FFFFFF;
-  --color-border: #E5E7EB;         /* border tipis card & input */
-  --color-border-hover: #D1D5DB;
+  --color-border: #E5E5E5;         /* neutral-200, border tipis card & input */
+  --color-border-hover: #D4D4D4;   /* neutral-300 */
 
   /* Text */
-  --color-text-primary: #111827;   /* judul, angka penting */
-  --color-text-secondary: #6B7280; /* label, deskripsi */
-  --color-text-muted: #9CA3AF;     /* placeholder, teks tersier */
+  --color-text-primary: #171717;   /* neutral-900, judul & angka penting */
+  --color-text-secondary: #737373; /* neutral-500, deskripsi */
+  --color-text-muted: #A3A3A3;     /* neutral-400, placeholder & teks tersier */
 
-  /* Aksen — dipakai konsisten sesuai makna, bukan dekoratif */
-  --color-accent: #2563EB;         /* primary action (tombol utama, link aktif) */
-  --color-accent-hover: #1D4ED8;
+  /* Aksen — hitam saja */
+  --color-accent: #171717;         /* tombol utama, item aktif */
+  --color-accent-hover: #000000;
 
-  /* Status Semantik (dipakai di insight, decision log, badge) */
-  --color-status-positive: #16A34A;  /* profit naik, rekomendasi baik, "Approve" */
-  --color-status-negative: #DC2626;  /* profit turun, risiko tinggi, "Cancel" */
+  /* Status semantik berwarna: satu-satunya pengecualian dari palet monokrom.
+     Nilai uang & status analisis (profit naik/turun, peringatan) wajib berwarna
+     agar cepat terbaca. Warna tetap align 1:1 dengan makna data. */
+  --color-status-positive: #16A34A;  /* profit naik, omzet naik */
+  --color-status-negative: #DC2626;  /* profit turun, omzet turun */
   --color-status-warning: #D97706;   /* perlu perhatian, data belum cukup */
-  --color-status-neutral: #7C3AED;   /* proses berjalan, "Inprocess" */
-  --color-status-info: #2563EB;      /* status submit/default */
+  --color-status-neutral: #7C3AED;   /* proses berjalan */
+  --color-status-info: #2563EB;      /* status default */
 
-  /* Sidebar (dark, kontras dengan area konten terang) */
-  --color-sidebar-bg: #111827;
-  --color-sidebar-text: #D1D5DB;
-  --color-sidebar-text-active: #FFFFFF;
-  --color-sidebar-active-bg: #2563EB;
+  /* Sidebar (terang, konsisten dengan konten; item aktif pill hitam) */
+  --color-sidebar-bg: #FFFFFF;
+  --color-sidebar-text: #737373;
+  --color-sidebar-text-active: #171717;  /* logo & hover */
+  --color-sidebar-active-bg: #171717;    /* item aktif: pill hitam, teks putih */
 }
 ```
 
-**Catatan penting soal warna status:** karena produk ini soal kejujuran data (lihat PRD §7), warna status TIDAK BOLEH dipakai untuk membuat sesuatu "terlihat" lebih positif dari kenyataan angkanya. Warna hijau/merah harus selalu align 1:1 dengan makna data (profit naik = hijau, bukan sebaliknya).
+**Catatan soal status:** warna status adalah satu-satunya pengecualian dari palet monokrom, dan hanya untuk makna data (profit naik = hijau, turun = merah, peringatan = amber). Warna harus selalu align 1:1 dengan makna, dan tetap disertai label teks eksplisit serta icon. Seluruh elemen lain (layout, border, teks, chart netral) tetap hitam-putih-abu.
 
 ### 2.2 Tipografi
 
 ```css
 :root {
   --font-family: 'Inter', -apple-system, sans-serif;
-
-  /* Ukuran */
-  --text-display: 28px;   /* judul halaman, mis. "Simulasi Baru" */
-  --text-h2: 20px;         /* judul card/section */
-  --text-h3: 16px;         /* sub-section, label form penting */
-  --text-body: 14px;       /* teks umum */
-  --text-small: 13px;      /* label, caption, metadata */
-  --text-tiny: 12px;       /* badge, timestamp */
-
-  /* Weight */
-  --weight-bold: 700;      /* judul, angka hasil simulasi */
-  --weight-semibold: 600;  /* label section, nama tombol */
-  --weight-regular: 400;   /* body text */
+  --text-display: 28px;
+  --text-h2: 20px;
+  --text-h3: 16px;
+  --text-body: 14px;
+  --text-small: 13px;
+  --text-tiny: 12px;
+  --weight-bold: 700;
+  --weight-semibold: 600;
+  --weight-regular: 400;
 }
 ```
 
-**Angka hasil simulasi (profit, margin, breakeven) selalu pakai `--weight-bold` di ukuran besar (24-32px)** — ini adalah elemen paling penting yang harus langsung terbaca, mirip cara "$1,120" ditampilkan tegas di reference image.
+**Aturan khusus landing page (hero):**
+- Judul utama memakai `Inter` semibold, dan satu kata penekanan memakai **serif miring** (`font-serif italic`, stack serif sistem: Georgia). Contoh: "Simulasikan dampak keputusan bisnis, *sebelum dieksekusi*".
+- Hanya satu kata/frasa pendek yang boleh serif miring per judul. Jangan lebih.
+- Deskripsi: `--text-small` sampai `--text-body`, warna `--color-text-secondary`.
+
+**Angka hasil simulasi selalu `--weight-bold` di ukuran besar (24-32px)** — elemen paling penting yang harus langsung terbaca.
 
 ### 2.3 Spacing & Radius
 
@@ -85,267 +89,171 @@ Rujukan terkait: `PRD.md` (fitur), `PLAN.md` (urutan build), `ARCHITECTURE.md` (
   --radius-input: 8px;
   --radius-button: 8px;
   --radius-badge: 6px;
-
-  --space-card-padding: 24px;
-  --space-section-gap: 32px;
-  --space-element-gap: 16px;
-  --space-inline-gap: 8px;
-}
-```
-
-### 2.4 Border & Shadow
-
-Hindari shadow berat. Gunakan border tipis sebagai pemisah utama (sesuai reference image yang nyaris tanpa shadow):
-
-```css
-:root {
-  --border-default: 1px solid var(--color-border);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04); /* nyaris tidak terlihat, hanya micro-depth */
-}
-```
-
-### 2.5 Grid System (Presisi, Bukan Perkiraan)
-
-Semua layout wajib mengikuti grid 8px sebagai satuan dasar — tidak ada angka spacing sembarang (`13px`, `21px`, dsb):
-
-```css
-:root {
-  --grid-unit: 8px;
-
-  /* Turunan dari grid-unit, dipakai konsisten di semua komponen */
-  --space-1: 4px;   /* setengah unit, untuk gap sangat rapat (icon+label) */
+  --space-1: 4px;   /* setengah unit, gap sangat rapat */
   --space-2: 8px;
   --space-3: 16px;
-  --space-4: 24px;
+  --space-4: 24px;  /* padding card */
   --space-5: 32px;
   --space-6: 48px;
   --space-7: 64px;
 }
 ```
 
-**Aturan pemakaian:**
-- Padding dalam card: selalu `--space-4` (24px), tidak boleh berbeda antar card di halaman yang sama
-- Gap antar card dalam satu grid: `--space-4` (24px)
-- Gap antar section (mis. Scenario Builder ke Decision Log di bawahnya): `--space-5` (32px)
-- Gap antar elemen form (label ke input, input ke input berikutnya): `--space-2` (8px) untuk label-input, `--space-3` (16px) untuk antar-field
-- Gap icon ke teks label (sidebar menu, tombol dengan icon): `--space-2` (8px), align vertikal center, bukan baseline
+### 2.4 Border & Shadow
 
-**Kolom grid halaman:** 12-column grid, max-width content area `1200px`, margin sidebar tetap 240px terpisah dari grid ini. Card mengambil kelipatan kolom (mis. form utama 8 kolom, panel insight kanan 4 kolom — rasio 2:1 seperti reference image).
+Hindari shadow tebal. Pemisah utama adalah border tipis 1px:
 
-**Alignment presisi:** semua elemen dalam satu row (label, input, tombol) harus align pada baseline yang sama secara vertikal. Tidak ada elemen yang "mengambang" beberapa pixel lebih tinggi/rendah dari yang lain dalam row yang sama — cek dengan grid overlay saat development.
+```css
+:root {
+  --border-default: 1px solid var(--color-border);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04); /* micro-depth saja */
+}
+```
+
+### 2.5 Grid System (Presisi, Bukan Perkiraan)
+
+Semua layout wajib mengikuti grid 8px. Tidak ada angka spacing sembarang.
+
+**Bento grid:**
+- Grid kartu memakai `gap-px` dengan background container `--color-border`, sehingga garis pemisah antar kartu terbentuk dari celah 1px itu sendiri.
+- Setiap kartu: `bg-white`, `rounded-xl`/`rounded-2xl` di tepi luar grid, padding `--space-4`.
+- **Cross-dot:** setiap sudut kartu mendapat marker plus kecil (SVG 9x9, garis 1px, warna `--color-text-muted`) yang diposisikan tepat di titik persimpangan garis grid (`-translate-x-1/2 -translate-y-1/2`). Kartu tetangga berbagi titik yang sama, hasilnya satu dot per persimpangan.
+
+**Kolom grid halaman:** 12-column grid, max-width content area `1200px`, sidebar 240px terpisah dari grid.
 
 ### 2.6 Icon System
 
-**Library:** Lucide Icons (turunan Feather Icons, lebih lengkap set-nya dan aktif di-maintain). Semua icon di seluruh produk wajib dari satu library ini — tidak boleh campur dengan icon set lain (Font Awesome, Heroicons, custom SVG) supaya visual weight dan style-nya konsisten.
+**Library:** Lucide Icons saja, `strokeWidth 1.5`, ukuran default 20px (tombol/sidebar) dan 16px (inline), `currentColor`.
 
-**Aturan pemakaian:**
-- Ukuran default: `20px` untuk icon di sidebar/tombol, `16px` untuk icon inline di teks/badge, `24px` untuk icon empty-state
-- Stroke width: `1.5` (default Lucide) — konsisten di semua tempat, jangan campur stroke tebal-tipis
-- Warna icon mengikuti warna teks di sekitarnya (`currentColor`), bukan warna fix independen, kecuali icon status yang memang perlu warna semantik (§2.1)
-- Icon selalu punya pasangan label teks di navigasi utama (sidebar) — tidak ada icon-only tanpa penjelasan kecuali di state collapsed (§6)
-
-**Daftar icon per fungsi (referensi cepat):**
-| Fungsi | Icon Lucide |
+| Fungsi | Icon |
 |---|---|
-| Dashboard | `LayoutGrid` |
-| Scenario Builder | `Calculator` |
+| Dashboard | `LayoutDashboard` |
+| Scenario Builder | `FlaskConical` |
 | Decision Log | `History` |
 | Data Bisnis | `Database` |
-| Insight | `Lightbulb` |
-| Pengaturan | `Settings` |
-| Search | `Search` |
-| Export | `Download` |
-| Kalender/tanggal | `Calendar` |
-| Dropdown chevron | `ChevronDown` |
-| Profit naik | `TrendingUp` |
-| Profit turun | `TrendingDown` |
-| Peringatan/data kurang | `AlertTriangle` |
-| Sukses/tersimpan | `CheckCircle2` |
+| Profit naik / turun | `TrendingUp` / `TrendingDown` |
+| Simulasi probabilistik | `FlaskConical` |
+| Peringatan | `AlertTriangle` |
 
-### 2.7 Menghindari Kesan "AI Slop" (Wajib Diperhatikan)
+### 2.7 Menghindari Kesan "AI Slop" (Wajib)
 
-Ini bagian yang sengaja ditulis eksplisit karena mudah lolos tanpa sadar saat development cepat, terutama kalau banyak dibantu AI coding agent.
-
-**Dilarang di seluruh UI copy dan visual:**
-- ❌ Emoji di label, tombol, judul, atau insight teks (✨ 🚀 💡 dsb) — icon Lucide sudah cukup untuk penanda visual, tidak butuh emoji tambahan
-- ❌ Em dash/en dash ("—", "–") di UI copy — gunakan kalimat pendek terpisah, atau koma, bukan tanda pisah panjang yang jadi ciri khas teks buatan AI
-- ❌ Tiga titik dekoratif atau bullet titik (•) yang tidak fungsional sebagai daftar — kalau butuh pemisah, gunakan spacing/border, bukan karakter titik
-- ❌ Judul/copy yang terasa "generated" seperti "Unlock Powerful Insights" atau "Supercharge Your Decisions" — bahasa harus lugas dan fungsional, sesuai gaya factual di PRD (contoh benar: "Simulasi Baru", bukan "Ciptakan Simulasi Impianmu")
-- ❌ Icon dekoratif yang tidak fungsional (mis. bintang berkilau, checklist mengambang) hanya untuk "mempercantik" tanpa makna informasi
+**Dilarang di seluruh UI:**
+- Emoji, em dash/en dash, bullet titik dekoratif.
+- Copy marketing generik. Bahasa lugas dan fungsional.
+- Gradient, glassmorphism, glow, shadow tebal.
+- **Semua warna selain hitam, putih, dan abu-abu** (termasuk di chart, border, icon, dan hover).
 
 **Hover & interaksi:**
-- ❌ Hover state yang berkedip, memantul (bounce), atau berubah warna drastis dalam animasi cepat berulang — ini terasa murahan dan mengganggu, bukan premium
-- ✅ Hover state harus **tenang**: transisi halus satu kali `150-200ms ease`, perubahan warna/background subtle (mis. card border dari `--color-border` ke `--color-border-hover`, row background ke `#F9FAFB`), tidak ada efek looping/berulang selama cursor diam di atas elemen
-- ✅ Focus state (keyboard navigation) jelas terlihat tapi tetap tenang — outline tipis warna accent, bukan glow tebal
+- Transisi tenang satu kali `150-200ms`, perubahan subtle (border `--color-border` → `--color-border-hover`, row → `#F8F8F8`).
+- Focus state jelas tapi tenang: outline tipis hitam.
 
-**Prinsip umum:** setiap elemen visual harus punya alasan fungsional untuk ada. Kalau sebuah dekorasi/animasi/copy hanya ada untuk "terlihat modern" tanpa menambah kejelasan informasi, itu dihapus. Produk ini menjual kepercayaan lewat kejelasan data, bukan lewat visual yang mencolok.
+---
 
+## 3. Struktur Halaman
 
+### 3.1 Landing Page (`/`)
 
-### 3.1 Struktur Halaman Utama
+```
+┌────────────────────────────────────────────────────────────┐
+│ Navbar: Logo kiri, menu tengah, pill "Log in" + "Sign Up"   │
+├────────────────────────────────────────────────────────────┤
+│ Hero: judul besar (serif italic) + deskripsi + CTA hitam    │
+│       pill "Request Demo" + ilustrasi line-art di kanan     │
+├────────────────────────────────────────────────────────────┤
+│ Social proof bar: baris nama mitra monokrom, border atas    │
+├────────────────────────────────────────────────────────────┤
+│ Feature grid 3 kolom: 6 kartu (icon, judul, deskripsi,      │
+│       wireframe mini monokrom), cross-dot di persimpangan   │
+├────────────────────────────────────────────────────────────┤
+│ Footer minimal                                               │
+└────────────────────────────────────────────────────────────┘
+```
+
+- Navbar: sticky, border bawah, CTA kanan berbentuk pill (`rounded-full`), "Sign Up" hitam dengan teks putih.
+- Hero: grid 2 kolom, ilustrasi SVG line-art (axes, garis putus-putus, polyline hitam, dot) di dalam card putih.
+- Social proof: teks wordmark `--color-text-muted` semibold, tanpa logo gambar.
+
+### 3.2 Halaman Ber-login
 
 ```
 ┌──────────┬────────────────────────────────────────────┐
-│           │  Topbar: judul halaman + deskripsi singkat │
-│  Sidebar  │  + action buttons kanan (opsional)         │
-│  (fixed,  ├────────────────────────────────────────────┤
-│  240px)   │                                              │
-│           │  Content area (card-based, max-width       │
-│           │  dengan padding konsisten)                  │
-│           │                                              │
+│          │  Topbar: judul halaman + deskripsi          │
+│  Sidebar │  + action buttons kanan (opsional)          │
+│  (fixed, ├────────────────────────────────────────────┤
+│  240px,  │  Content area card-based, max-width,        │
+│  hitam)  │  gap antar card 24px                        │
 └──────────┴────────────────────────────────────────────┘
 ```
 
-### 3.2 Sidebar
-
-- Lebar tetap ~240px, background gelap (`--color-sidebar-bg`)
-- Logo/nama produk di atas
-- Menu utama dengan ikon + label:
-  - Dashboard
-  - Scenario Builder (pengganti "Booking Pad" di referensi — entry point utama buat simulasi baru)
-  - Decision Log (riwayat simulasi)
-  - Data Bisnis (upload transaksi, Phase 2)
-  - Insight & Benchmark (Phase 2+)
-  - Pengaturan
-- Item aktif: background `--color-sidebar-active-bg`, teks putih, sisanya abu-abu muted
-- Konsisten di semua halaman — tidak berubah struktur antar page
-
-### 3.3 Topbar per Halaman
-
-Mengikuti pola reference image: judul besar (`--text-display`) + deskripsi 1 baris di bawahnya + action button di kanan (align sejajar dengan judul, bukan di bawahnya).
-
-Contoh (halaman Scenario Builder):
-```
-Simulasi Baru                              [Riwayat]  [Buat Simulasi Baru →]
-Buat skenario keputusan dan lihat dampaknya sebelum dieksekusi.
-```
+- Sidebar terang (`bg-white`, border kanan `--color-border`, sama seperti area konten), item aktif **pill hitam dengan teks putih** (konsisten dengan CTA landing), hover row `#F8F8F8`, icon `strokeWidth 1.5`.
+- Semua card: putih, border tipis, `rounded-xl`, padding 24px.
 
 ---
 
 ## 4. Komponen Utama
 
 ### 4.1 Card
-
-- Background putih, border `1px solid var(--color-border)`, radius `12px`, padding `24px`
-- Judul card: `--text-h2`, `--weight-semibold`, warna `--color-text-primary`
-- Deskripsi di bawah judul: `--text-small`, `--color-text-secondary`
-- Tidak ada shadow berat — cukup border untuk pemisahan visual dari `--color-bg-app`
+Background putih, border `1px solid var(--color-border)`, `rounded-xl`, padding `24px`. Judul card `--text-h2` semibold `--color-text-primary`, deskripsi `--text-small` `--color-text-secondary`.
 
 ### 4.2 Form Input
-
-Mengikuti pola grid 3-4 kolom seperti reference (Select Request Type, Search PNR, Passenger Name, dst. dalam satu row):
-
-- Label di atas input: `--text-small`, `--color-text-secondary`
-- Input: border `1px solid var(--color-border)`, radius `8px`, padding `10px 12px`, teks `--text-body`
-- Input aktif/focus: border berubah ke `--color-accent`, tanpa glow berlebihan
-- Dropdown & date picker: ikon chevron/calendar di kanan input, konsisten dengan reference
-
-**Grid Scenario Builder (menyesuaikan 4 jenis skenario dari PRD):**
-```
-Row 1: [Jenis Skenario ▾]  [Harga/Parameter Saat Ini]  [Parameter Baru]  [Estimasi Dampak %]
-Row 2: [Kategori spesifik ▾]  [Tanggal berlaku 📅]  [Catatan tambahan (opsional)]
-```
+Label di atas input (`--text-small`, secondary), input border `--color-border` `rounded-lg`, focus border hitam. Tanpa glow.
 
 ### 4.3 Tombol
-
 | Jenis | Style |
 |---|---|
-| Primary (mis. "Jalankan Simulasi") | Background `--color-accent`, teks putih, radius `8px`, padding `10px 20px`, `--weight-semibold` |
-| Secondary (mis. "Export", "Riwayat") | Background putih, border `1px solid var(--color-border)`, teks `--color-text-primary` |
-| Icon button | Border tipis, icon saja, dipakai untuk aksi sekunder (search, download) |
+| Primary ("Jalankan Simulasi", "Sign Up") | Background hitam (`--color-accent`), teks putih, semibold |
+| Secondary | Background putih, border `--color-border`, teks `--color-text-primary` |
+| Pill (landing CTA) | `rounded-full`, hitam/outline |
 
-### 4.4 Badge Status (untuk Decision Log)
+### 4.4 Badge Status
+Teks berwarna monokrom + label eksplisit ("Profit Naik" hitam, "Profit Turun" abu) + icon status. Tidak hanya mengandalkan warna.
 
-Mengikuti pola warna teks-only di reference (bukan pill solid berwarna, hanya teks berwarna + label di bawahnya):
+### 4.5 Tabel/List Riwayat
+Row list dengan border bawah tipis, hover `#F8F8F8`, klik menuju detail.
 
-```
-Profit Naik           →  --color-status-positive, --weight-semibold
-Profit Turun           →  --color-status-negative, --weight-semibold
-Perlu Data Tambahan    →  --color-status-warning, --weight-semibold
-Simulasi Tersimpan     →  --color-status-info, --weight-semibold
-```
+### 4.6 Panel Insight
+Card insight dengan icon semantik (TrendingUp/TrendingDown/AlertTriangle/Info), teks `--text-body` `--color-text-primary`.
 
-### 4.5 Tabel/List Riwayat (Decision Log)
-
-Mengikuti struktur "Latest Support History" di reference — bukan tabel grid kaku, tapi list row dengan 4 kolom informasi + status di kanan:
-
-```
-SIM#20260803-01        Kenaikan Harga         03/08/2026         Profit Naik +12%
-Jenis Simulasi          Kategori               Tanggal            Hasil
-```
-
-- Setiap baris dipisah border tipis bawah (`border-bottom: 1px solid var(--color-border)`)
-- Hover row: background sangat halus (`#F9FAFB`)
-- Klik row → buka detail simulasi
-
-### 4.6 Panel Insight (pengganti FAQ di reference)
-
-Card di sisi kanan dashboard/hasil simulasi, mirip posisi "Frequently Asked Questions" — tapi isinya insight otomatis (Template NLG dari PRD Phase 1/4):
-
-```
-┌─────────────────────────────┐
-│ Insight Simulasi Ini          │
-├─────────────────────────────┤
-│ ▾ Kenaikan harga ini masih    │
-│   menguntungkan selama        │
-│   pelanggan tidak turun       │
-│   lebih dari 12%.             │
-│                                │
-│   Breakeven point: 8% ↓       │
-│   pelanggan                   │
-└─────────────────────────────┘
-```
-
-Style accordion (collapsible) seperti FAQ di reference untuk insight yang lebih dari satu poin.
+### 4.7 Chart
+Chart monokrom untuk data netral (tren omzet, histogram distribusi): grid `#E5E5E5`, ticks `#A3A3A3`, garis/bar utama `#171717`, bar sekunder `#D4D4D4`, cursor tooltip `#FAFAFA`. Bar hasil simulasi memakai warna status: hijau jika profit naik, merah jika turun.
 
 ---
 
 ## 5. Halaman Utama (Wireframe Deskriptif)
 
-### 5.1 Dashboard (Landing setelah login)
-
-- Ringkasan: jumlah simulasi bulan ini, quick-access ke Scenario Builder
-- Card "Simulasi Terbaru" (3-5 entry terakhir dari Decision Log)
-- Kalau Phase 2 aktif: card kecil tren data bisnis (omzet bulan ini vs bulan lalu)
+### 5.1 Dashboard
+Ringkasan simulasi bulan ini, quick-access Scenario Builder, card "Simulasi Terbaru", card kecil tren data.
 
 ### 5.2 Scenario Builder
-
-- Card besar "Buat Simulasi Baru" (mirip "Create New Ticket" di reference) — form input sesuai §4.2
-- Tombol submit besar, warna accent, di kiri bawah form
-- Setelah submit → tampilkan card hasil di bawahnya: grafik profit before/after (Recharts, bar chart sederhana, warna positif/negatif sesuai token) + panel insight di kanan (§4.6)
+Card besar "Buat Simulasi Baru": form 4 jenis skenario, tombol submit hitam. Hasil: chart bar before/after monokrom + panel insight + kartu "Analisis dari Data Anda" (elastisitas, Monte Carlo).
 
 ### 5.3 Decision Log
+List riwayat penuh dengan filter, status monokrom berlabel.
 
-- List riwayat penuh (§4.5), dengan filter di atas (jenis skenario, rentang tanggal, status hasil)
-- Tombol "Export" di kanan atas card (CSV), mengikuti pola reference
-
-### 5.4 Data Bisnis (Phase 2)
-
-- Card upload CSV (drag-drop area sederhana)
-- Card preview data sebelum konfirmasi simpan
-- Card tren dasar (grafik omzet/growth) setelah data tersimpan
+### 5.4 Data Bisnis
+Card upload CSV, preview, tren omzet (line chart hitam), item terlaris.
 
 ---
 
 ## 6. Prinsip Responsif
 
-- Breakpoint utama: desktop-first (target user adalah owner bisnis yang kemungkinan pakai laptop untuk kerja serius), tapi tetap harus fungsional di tablet/mobile untuk cek cepat.
-- Sidebar collapse jadi ikon-only di layar < 1024px, full-hidden dengan hamburger toggle di < 768px.
-- Grid form (§4.2) turun dari 4 kolom → 2 kolom → 1 kolom sesuai lebar layar.
+- Desktop-first, tetap fungsional di tablet/mobile.
+- Sidebar collapse jadi icon-only di < 1024px, hidden dengan hamburger di < 768px.
+- Grid form turun dari 4 → 2 → 1 kolom. Bento grid turun 3 → 2 → 1 kolom.
 
 ---
 
 ## 7. Aksesibilitas Dasar
 
-- Kontras warna teks vs background minimal WCAG AA (terutama `--color-text-secondary` di atas putih — sudah dicek aman di atas)
-- Semua input punya `<label>` yang terhubung eksplisit, bukan cuma placeholder
-- Status warna (§4.4) tidak hanya mengandalkan warna — selalu disertai teks label eksplisit ("Profit Naik", bukan cuma warna hijau)
+- Kontras teks vs background minimal WCAG AA (text-secondary `#737373` di atas putih aman).
+- Semua input punya `<label>` eksplisit.
+- Status tidak hanya mengandalkan warna: selalu ada label teks + icon.
 
 ---
 
 ## 8. Yang Sengaja Dihindari
 
-- ❌ Gradient mencolok atau efek glassmorphism berlebihan — reference-nya flat & clean, bukan trendy-heavy
-- ❌ Animasi berlebihan — transisi halus secukupnya (hover, focus), tidak ada animasi dekoratif yang memperlambat UX
-- ❌ Terlalu banyak warna aksen berbeda — palet dibatasi ketat sesuai §2.1 supaya konsisten dan tidak norak
-- ❌ Dark mode di MVP (bisa jadi enhancement nanti, bukan prioritas Phase 1)
+- ❌ Semua warna non-monokrom untuk elemen dekoratif: gradient, neon, glassmorphism, shadow tebal. Satu-satunya warna yang boleh ada adalah status semantik §2.1.
+- ❌ Animasi berlebihan; transisi hanya untuk hover/focus.
+- ❌ Lebih dari satu kata serif miring per judul.
+- ❌ Dark mode kedua: tidak ada area gelap sama sekali, sidebar ikut terang (monokrom penuh).

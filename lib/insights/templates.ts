@@ -1,4 +1,5 @@
 import type { SimulationResult } from "@/types";
+import { formatNumber, SCENARIO_VERB } from "@/lib/constants";
 
 export type InsightTone = "positive" | "negative" | "warning" | "info";
 
@@ -7,26 +8,12 @@ export interface Insight {
   text: string;
 }
 
-export function formatNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat("id-ID", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
-}
-
 export function formatPercent(value: number): string {
   return `${formatNumber(value, 1)}%`;
 }
 
-const SCENARIO_LABEL: Record<SimulationResult["scenarioType"], string> = {
-  pricing: "penyesuaian harga",
-  discount: "diskon",
-  staffing: "penambahan pegawai",
-  inventory: "penyesuaian stok",
-};
-
 function verdictInsight(result: SimulationResult): Insight {
-  const label = SCENARIO_LABEL[result.scenarioType];
+  const label = SCENARIO_VERB[result.scenarioType];
   if (result.profitChangePercent > 0) {
     return {
       tone: "positive",
@@ -51,7 +38,7 @@ function verdictInsight(result: SimulationResult): Insight {
 
 function breakevenInsight(result: SimulationResult): Insight {
   const breakeven = result.breakeven;
-  const label = SCENARIO_LABEL[result.scenarioType];
+  const label = SCENARIO_VERB[result.scenarioType];
 
   if (!breakeven) {
     return {

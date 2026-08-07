@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { calculateProfitImpact } from "@/lib/simulation";
+import { calculateProfitImpact } from "@/lib/simulation/engine";
 import { scenarioSchema } from "@/lib/validation/scenarios";
 import type { ScenarioInput } from "@/types";
 

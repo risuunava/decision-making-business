@@ -37,7 +37,7 @@ export function SimulationRow({
   return (
     <Link
       href={`/history/${id}`}
-      className="grid grid-cols-2 items-center gap-2 border-b border-line py-3 transition-colors duration-150 last:border-b-0 hover:bg-[#f9fafb] sm:grid-cols-[1fr_1.4fr_auto] sm:gap-6"
+      className="grid grid-cols-2 items-center gap-2 border-b border-line py-3 transition-colors duration-150 last:border-b-0 hover:bg-neutral-50 sm:grid-cols-[1fr_1.4fr_auto] sm:gap-6"
     >
       <span className="text-[12px] font-semibold uppercase text-muted">
         SIM#{id.slice(0, 8).toUpperCase()}

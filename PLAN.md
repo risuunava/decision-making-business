@@ -104,31 +104,31 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 ### Langkah Kerja
 
 **2.1 — Tabel `transactions` & `pricing_history`**
-- Tambah skema sesuai PRD §9
-- RLS disesuaikan
+- [x] Tambah skema sesuai PRD §9 (migrasi `0002_phase2.sql`)
+- [x] RLS disesuaikan (policy select/insert/update/delete lewat kepemilikan business)
 
 **2.2 — Upload CSV**
-- UI upload file, parsing pakai PapaParse (client-side, tidak butuh backend khusus)
-- Validasi format kolom (tanggal, item, quantity, harga, cost)
-- Preview data sebelum konfirmasi simpan ke Supabase
+- [x] UI upload file, parsing pakai PapaParse (client-side, tidak butuh backend khusus)
+- [x] Validasi format kolom (tanggal, item, quantity, harga, cost), format tanggal YYYY-MM-DD atau DD/MM/YYYY
+- [x] Preview data sebelum konfirmasi simpan ke Supabase (validasi ulang di server action, delete + insert batch)
 
 **2.3 — Insight Berbasis Tren (bukan elastisitas otomatis)**
-- Hitung metrik deskriptif murni: rata-rata omzet per bulan, growth rate, item terlaris
-- **Eksplisit tidak** menghitung elastisitas harga otomatis di sini (sesuai batasan §7 — baru masuk akal kalau ada variasi harga historis yang cukup)
-- Tampilkan sebagai dashboard ringkas di halaman terpisah dari Scenario Builder
+- [x] Hitung metrik deskriptif murni: rata-rata omzet per bulan, growth rate, item terlaris (pure function di `/lib/analytics/trends.ts` + unit test)
+- [x] **Eksplisit tidak** menghitung elastisitas harga otomatis di sini (sesuai batasan §7 — baru masuk akal kalau ada variasi harga historis yang cukup)
+- [x] Tampilkan sebagai dashboard ringkas di halaman `/data` (terpisah dari Scenario Builder)
 
 **2.4 — Benchmark Industri (data statis, dikurasi manual)**
-- Buat file data statis (`/lib/data/benchmarks.ts`) berisi angka referensi umum per jenis bisnis (mis. margin tipikal F&B, elastisitas umum kategori tertentu — dari riset publik, bukan dari user)
-- Tampilkan sebagai pembanding opsional saat user isi asumsi manual di Scenario Builder — bukan angka otomatis yang dipakai sistem, murni referensi untuk bantu user
+- [x] Buat file data statis (`/lib/data/benchmarks.ts`) berisi angka referensi umum per jenis bisnis (mis. margin tipikal F&B, elastisitas umum kategori tertentu — dari riset publik, bukan dari user)
+- [x] Tampilkan sebagai pembanding opsional saat user isi asumsi manual di Scenario Builder — bukan angka otomatis yang dipakai sistem, murni referensi untuk bantu user
 
 **2.5 — Integrasi Scenario Builder dengan Data**
-- Saat user buat simulasi baru, tampilkan data historis relevan sebagai *bantuan konteks* (misal: "Rata-rata volume penjualan bulan lalu: X unit") di sebelah form, tanpa auto-fill asumsi
+- [x] Saat user buat simulasi baru, tampilkan data historis relevan sebagai *bantuan konteks* (misal: "Rata-rata omzet bulanan: X") di sebelah form, tanpa auto-fill asumsi
 
 ### Definition of Done
-- [ ] User bisa upload CSV transaksi dan lihat preview sebelum simpan
-- [ ] Dashboard tren dasar (omzet, growth) tampil benar dari data ter-upload
-- [ ] Benchmark industri muncul sebagai referensi di Scenario Builder
-- [ ] Tidak ada klaim "elastisitas dari data Anda" di UI manapun — audit ulang semua copy/teks di aplikasi untuk pastikan sesuai batasan PRD §7
+- [x] User bisa upload CSV transaksi dan lihat preview sebelum simpan
+- [x] Dashboard tren dasar (omzet, growth) tampil benar dari data ter-upload
+- [x] Benchmark industri muncul sebagai referensi di Scenario Builder
+- [x] Tidak ada klaim "elastisitas dari data Anda" di UI manapun — audit ulang semua copy/teks di aplikasi untuk pastikan sesuai batasan PRD §7
 
 ---
 
@@ -139,27 +139,29 @@ Setiap phase punya: tujuan, deliverable konkret, urutan kerja, dan **definition 
 ### Langkah Kerja
 
 **3.1 — Deteksi Kelayakan Data**
-- Fungsi pengecek: apakah `pricing_history` user punya minimal 2-3 titik harga berbeda dengan data volume penjualan yang cukup?
-- Kalau tidak memenuhi syarat → fitur ini disembunyikan/disabled dengan pesan jelas kenapa (bukan error samar)
+- [x] Fungsi pengecek: apakah `pricing_history` user punya minimal 2-3 titik harga berbeda dengan data volume penjualan yang cukup?
+- [x] Kalau tidak memenuhi syarat → fitur ini disembunyikan/disabled dengan pesan jelas kenapa (bukan error samar)
 
 **3.2 — Estimasi Elastisitas (regresi linear sederhana)**
-- Implementasi regresi linear murni di TypeScript (tidak perlu Python/NumPy untuk kasus sederhana — bisa pakai formula least-squares manual atau library ringan seperti `simple-statistics`)
-- Tampilkan hasil dengan confidence yang jujur (mis. R² ditampilkan, bukan disembunyikan)
+- [x] Implementasi regresi linear murni di TypeScript (tidak perlu Python/NumPy untuk kasus sederhana — bisa pakai formula least-squares manual atau library ringan seperti `simple-statistics`)
+- [x] Tampilkan hasil dengan confidence yang jujur (mis. R² ditampilkan, bukan disembunyikan)
 
 **3.3 — Simulasi Probabilistik Ringan (Monte Carlo versi TS)**
-- Implementasi Monte Carlo sederhana di client-side/serverless function (loop random sampling berbasis distribusi dari data historis user)
-- Untuk skala kecil (ratusan–ribuan iterasi), ini tetap ringan dijalankan di Vercel serverless function tanpa biaya tambahan
-- Output: distribusi probabilitas profit (histogram), bukan angka tunggal
+- [x] Implementasi Monte Carlo sederhana di client-side/serverless function (loop random sampling berbasis distribusi dari data historis user)
+- [x] Untuk skala kecil (ratusan–ribuan iterasi), ini tetap ringan dijalankan di Vercel serverless function tanpa biaya tambahan
+- [x] Output: distribusi probabilitas profit (histogram), bukan angka tunggal
 
 **3.4 — Update UI Hasil Simulasi**
-- Untuk user yang datanya memenuhi syarat: tampilkan opsi "Simulasi Lanjutan (Probabilistik)" di samping hasil dasar Mode A
-- Untuk user yang belum: tetap dapat Mode A + Mode B dasar, tanpa merasa fitur "rusak"
+- [x] Untuk user yang datanya memenuhi syarat: tampilkan opsi "Simulasi Lanjutan (Probabilistik)" di samping hasil dasar Mode A
+- [x] Untuk user yang belum: tetap dapat Mode A + Mode B dasar, tanpa merasa fitur "rusak"
 
 ### Definition of Done
-- [ ] Sistem secara akurat mendeteksi kapan data user cukup untuk elastisitas/Monte Carlo
-- [ ] Estimasi elastisitas disertai indikator kepercayaan (bukan angka pasti tanpa konteks)
-- [ ] Monte Carlo berjalan tanpa menambah biaya infra (tetap di serverless function gratis Vercel)
-- [ ] Unit test untuk fungsi statistik (regresi, sampling)
+- [x] Sistem secara akurat mendeteksi kapan data user cukup untuk elastisitas/Monte Carlo
+- [x] Estimasi elastisitas disertai indikator kepercayaan (bukan angka pasti tanpa konteks)
+- [x] Monte Carlo berjalan tanpa menambah biaya infra (tetap di serverless function gratis Vercel)
+- [x] Unit test untuk fungsi statistik (regresi, sampling)
+
+Catatan implementasi: kelayakan diturunkan dari tabel `transactions` (harga rata-rata tertimbang per item per bulan), bukan `pricing_history`, karena tabel itu terisi natural dari transactions sesuai PRD §9. Elastisitas memakai regresi log-log (slope = elastisitas, R² = indikator kepercayaan) di `/lib/statistics/elasticity.ts`. Monte Carlo menyampling perubahan volume bulanan historis bisnis dan berlaku untuk skenario pricing di `/lib/statistics/monteCarlo.ts`.
 
 ---
 

@@ -83,3 +83,22 @@ export interface Business {
   currency: string;
   created_at: string;
 }
+
+export interface Transaction {
+  id: string;
+  business_id: string;
+  date: string;
+  item_name: string;
+  quantity: number;
+  unit_price: number;
+  cost_per_unit: number;
+  created_at: string;
+}
+
+export interface CsvTransactionRow {
+  date: string;
+  item_name: string;
+  quantity: number;
+  unit_price: number;
+  cost_per_unit: number;
+}
