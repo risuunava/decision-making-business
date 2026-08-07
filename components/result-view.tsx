@@ -5,11 +5,11 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
+import { CHART, ChartChrome } from "@/components/chart-chrome";
 import {
   TrendingUp,
   TrendingDown,
@@ -79,54 +79,40 @@ export function ResultView({
             Perbandingan profit sebelum dan sesudah keputusan.
           </p>
 
-          <div className="mt-4 h-[220px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#e5e5e5"
-                />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 13, fill: "#737373" }}
-                  axisLine={{ stroke: "#e5e5e5" }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: "#a3a3a3" }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={64}
-                  tickFormatter={(value: number) => formatCompactNumber(value)}
-                />
-                <Tooltip
-                  formatter={(value) =>
-                    typeof value === "number"
-                      ? formatMoney(value, currency)
-                      : String(value ?? "")
-                  }
-                  cursor={{ fill: "#fafafa" }}
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: "1px solid #e5e5e5",
-                    fontSize: 13,
-                  }}
-                />
-                <Bar
-                  dataKey="profit"
-                  radius={[6, 6, 0, 0]}
-                  maxBarSize={72}
-                >
-                  <Cell fill="#d4d4d4" fillOpacity={0.8} />
-                  <Cell fill={profitUp ? "#16a34a" : "#dc2626"} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <ChartChrome height={220} className="mt-4">
+            <BarChart
+              data={chartData}
+              margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
+            >
+              <CartesianGrid {...CHART.grid} />
+              <XAxis
+                dataKey="name"
+                tick={CHART.axisTick}
+                axisLine={CHART.axisLine}
+                tickLine={false}
+              />
+              <YAxis
+                tick={CHART.yTick}
+                axisLine={false}
+                tickLine={false}
+                width={64}
+                tickFormatter={(value: number) => formatCompactNumber(value)}
+              />
+              <Tooltip
+                formatter={(value) =>
+                  typeof value === "number"
+                    ? formatMoney(value, currency)
+                    : String(value ?? "")
+                }
+                cursor={CHART.cursor}
+                contentStyle={CHART.tooltipStyle}
+              />
+              <Bar dataKey="profit" radius={[6, 6, 0, 0]} maxBarSize={72}>
+                <Cell fill="#d4d4d4" fillOpacity={0.8} />
+                <Cell fill={profitUp ? "#16a34a" : "#dc2626"} />
+              </Bar>
+            </BarChart>
+          </ChartChrome>
         </div>
 
         <div className="flex flex-col gap-4">

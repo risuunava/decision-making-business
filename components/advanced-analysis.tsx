@@ -1,16 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { Activity, FlaskConical } from "lucide-react";
+import { CHART, ChartChrome } from "@/components/chart-chrome";
 import type { PricingInput } from "@/types";
 import type { ElasticityEstimate } from "@/lib/statistics/elasticity";
 import {
@@ -61,20 +54,8 @@ export function AdvancedAnalysis({
 
   const monteCarloReady = volumeChanges.length >= MIN_MC_CHANGES;
 
-  const histogram = useMemo(() => {
-    if (!showMonteCarlo) return [];
-    const profits = monteCarloProfit(
-      volumeChanges,
-      input.currentVolume,
-      input.newPrice,
-      input.costPerUnit,
-      MC_ITERATIONS
-    );
-    return buildHistogram(profits, HISTOGRAM_BINS);
-  }, [showMonteCarlo, volumeChanges, input]);
-
-  const range = useMemo(() => {
-    if (!showMonteCarlo) return null;
+  const { histogram, range } = useMemo(() => {
+    if (!showMonteCarlo) return { histogram: [], range: null };
     const profits = monteCarloProfit(
       volumeChanges,
       input.currentVolume,
@@ -83,8 +64,11 @@ export function AdvancedAnalysis({
       MC_ITERATIONS
     );
     return {
-      low: percentile(profits, 10),
-      high: percentile(profits, 90),
+      histogram: buildHistogram(profits, HISTOGRAM_BINS),
+      range: {
+        low: percentile(profits, 10),
+        high: percentile(profits, 90),
+      },
     };
   }, [showMonteCarlo, volumeChanges, input]);
 
@@ -135,50 +119,40 @@ export function AdvancedAnalysis({
                 persen: {formatMoney(range?.low ?? 0, currency)} sampai{" "}
                 {formatMoney(range?.high ?? 0, currency)}.
               </p>
-              <div className="h-[200px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={histogram}
-                    margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={false}
-                      stroke="#e5e5e5"
-                    />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 11, fill: "#a3a3a3" }}
-                      axisLine={{ stroke: "#e5e5e5" }}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      allowDecimals={false}
-                      tick={{ fontSize: 12, fill: "#a3a3a3" }}
-                      axisLine={false}
-                      tickLine={false}
-                      width={40}
-                    />
-                    <Tooltip
-                      formatter={(value) =>
-                        typeof value === "number" ? `${value} iterasi` : ""
-                      }
-                      cursor={{ fill: "#fafafa" }}
-                      contentStyle={{
-                        borderRadius: 8,
-                        border: "1px solid #e5e5e5",
-                        fontSize: 13,
-                      }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      fill="#171717"
-                      radius={[6, 6, 0, 0]}
-                      maxBarSize={48}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartChrome height={200} className="mt-4">
+                <BarChart
+                  data={histogram}
+                  margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
+                >
+                  <CartesianGrid {...CHART.grid} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 11, fill: "#a3a3a3" }}
+                    axisLine={CHART.axisLine}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={CHART.yTick}
+                    axisLine={false}
+                    tickLine={false}
+                    width={40}
+                  />
+                  <Tooltip
+                    formatter={(value) =>
+                      typeof value === "number" ? `${value} iterasi` : ""
+                    }
+                    cursor={CHART.cursor}
+                    contentStyle={CHART.tooltipStyle}
+                  />
+                  <Bar
+                    dataKey="count"
+                    fill="#171717"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={48}
+                  />
+                </BarChart>
+              </ChartChrome>
               {/* ponytail: perubahan volume bisnis keseluruhan dipakai untuk volume produk tunggal.
                   Upgrade ke sampel per item saat riwayat per item cukup panjang. */}
             </>

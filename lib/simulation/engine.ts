@@ -183,7 +183,3 @@ export function calculateProfitImpact(input: ScenarioInput): SimulationResult {
       return calculateInventory(input);
   }
 }
-
-export function calculateBreakeven(input: ScenarioInput): BreakevenPoint | null {
-  return calculateProfitImpact(input).breakeven;
-}

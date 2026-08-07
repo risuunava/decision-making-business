@@ -7,6 +7,7 @@ export interface ScenarioField {
   label: string;
   hint?: string;
   kind: FieldKind;
+  min?: number;
 }
 
 export const SCENARIO_FIELDS: Record<ScenarioType, ScenarioField[]> = {
@@ -37,6 +38,7 @@ export const SCENARIO_FIELDS: Record<ScenarioType, ScenarioField[]> = {
       label: "Estimasi Perubahan Volume",
       hint: "Perkiraan dampak kenaikan harga terhadap unit terjual. Gunakan angka negatif bila pelanggan berkurang.",
       kind: "percent",
+      min: -99.99,
     },
   ],
   discount: [
@@ -114,12 +116,14 @@ export const SCENARIO_FIELDS: Record<ScenarioType, ScenarioField[]> = {
       label: "Perubahan Stok",
       hint: "Estimasi perubahan ketersediaan stok.",
       kind: "percent",
+      min: -100,
     },
     {
       name: "salesChangePercent",
       label: "Dampak ke Penjualan",
       hint: "Perkiraan perubahan unit terjual akibat perubahan stok.",
       kind: "percent",
+      min: -100,
     },
   ],
 };

@@ -4,12 +4,12 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { CHART, ChartChrome } from "@/components/chart-chrome";
 import type { SummaryStats, TopItem } from "@/lib/analytics/trends";
 import { formatCompactNumber, formatMoney, formatNumber } from "@/lib/constants";
 
@@ -90,13 +90,7 @@ export function TrendsView({
             value={
               growth === null ? "Belum cukup data" : `${growth > 0 ? "+" : ""}${formatNumber(growth, 1)}%`
             }
-            sub={
-              growth === null
-                ? undefined
-                : growth >= 0
-                  ? "Dibanding bulan sebelumnya"
-                  : "Dibanding bulan sebelumnya"
-            }
+            sub={growth === null ? undefined : "Dibanding bulan sebelumnya"}
             subClass={
               growth === null
                 ? undefined
@@ -114,54 +108,45 @@ export function TrendsView({
           <p className="mt-1 text-[13px] text-sub">
             Total nilai transaksi per bulan dari data yang Anda unggah.
           </p>
-          <div className="mt-4 h-[240px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={chartData}
-                margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#e5e5e5"
-                />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 13, fill: "#737373" }}
-                  axisLine={{ stroke: "#e5e5e5" }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: "#a3a3a3" }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={64}
-                  tickFormatter={(value: number) => formatCompactNumber(value)}
-                />
-                <Tooltip
-                  formatter={(value) =>
-                    typeof value === "number"
-                      ? formatMoney(value, currency)
-                      : String(value ?? "")
-                  }
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: "1px solid #e5e5e5",
-                    fontSize: 13,
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="revenue"
-                  name="Omzet"
-                  stroke="#171717"
-                  strokeWidth={2}
-                  dot={{ r: 3, fill: "#171717", strokeWidth: 0 }}
-                  activeDot={{ r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <ChartChrome height={240} className="mt-4">
+            <LineChart
+              data={chartData}
+              margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
+            >
+              <CartesianGrid {...CHART.grid} />
+              <XAxis
+                dataKey="month"
+                tick={CHART.axisTick}
+                axisLine={CHART.axisLine}
+                tickLine={false}
+              />
+              <YAxis
+                tick={CHART.yTick}
+                axisLine={false}
+                tickLine={false}
+                width={64}
+                tickFormatter={(value: number) => formatCompactNumber(value)}
+              />
+              <Tooltip
+                formatter={(value) =>
+                  typeof value === "number"
+                    ? formatMoney(value, currency)
+                    : String(value ?? "")
+                }
+                cursor={CHART.cursor}
+                contentStyle={CHART.tooltipStyle}
+              />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                name="Omzet"
+                stroke="#171717"
+                strokeWidth={2}
+                dot={{ r: 3, fill: "#171717", strokeWidth: 0 }}
+                activeDot={{ r: 5 }}
+              />
+            </LineChart>
+          </ChartChrome>
         </div>
 
         <div className="rounded-xl border border-line bg-card p-6 shadow-card">

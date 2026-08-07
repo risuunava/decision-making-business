@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  calculateBreakeven,
   calculateMargin,
   calculateProfit,
   calculateProfitImpact,
@@ -172,21 +171,5 @@ describe("calculateProfitImpact: inventory", () => {
     const result = calculateProfitImpact(input);
     expect(result.breakeven?.value).toBe(0);
     expect(result.breakeven?.metric).toBe("maxVolumeDrop");
-  });
-});
-
-describe("calculateBreakeven", () => {
-  it("mengembalikan breakeven yang sama dengan calculateProfitImpact", () => {
-    const input = {
-      scenarioType: "pricing" as const,
-      currentPrice: 100,
-      newPrice: 120,
-      currentVolume: 100,
-      costPerUnit: 60,
-      volumeChangePercent: -10,
-    };
-    expect(calculateBreakeven(input)).toEqual(
-      calculateProfitImpact(input).breakeven
-    );
   });
 });
