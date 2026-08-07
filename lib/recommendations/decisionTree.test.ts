@@ -43,7 +43,7 @@ describe("buildRecommendations", () => {
     });
     expect(
       recommendations.some(
-        (r) => r.tone === "negative" && r.text.includes("di bawah biaya")
+        (r) => r.tone === "negative" && r.text.includes("tidak menutupi biaya")
       )
     ).toBe(true);
   });
