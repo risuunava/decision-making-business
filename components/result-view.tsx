@@ -15,11 +15,13 @@ import {
   TrendingDown,
   AlertTriangle,
   Info,
+  Lightbulb,
   type LucideIcon,
 } from "lucide-react";
 import type { SimulationResult } from "@/types";
 import { buildInsights } from "@/lib/insights/templates";
 import type { InsightTone } from "@/lib/insights/templates";
+import type { Recommendation } from "@/lib/recommendations/decisionTree";
 import { formatCompactNumber, formatMoney, formatNumber } from "@/lib/constants";
 
 const TONE_META: Record<
@@ -54,9 +56,11 @@ function Metric({
 export function ResultView({
   result,
   currency,
+  recommendations = [],
 }: {
   result: SimulationResult;
   currency: string;
+  recommendations?: Recommendation[];
 }) {
   const profitUp = result.profitChange >= 0;
   const showMargin =
@@ -180,6 +184,40 @@ export function ResultView({
           })}
         </ul>
       </div>
+
+      {recommendations.length > 0 ? (
+        <div className="rounded-xl border border-line bg-card p-6 shadow-card">
+          <div className="flex items-center gap-2">
+            <Lightbulb size={18} className="text-primary" />
+            <h2 className="text-[16px] font-semibold text-ink">Rekomendasi</h2>
+          </div>
+          <p className="mt-1 text-[12px] text-sub">
+            Berdasarkan analisis skenario Anda dan pola umum industri.
+          </p>
+          <ul className="mt-4 flex flex-col gap-3">
+            {recommendations.map((recommendation, index) => {
+              const tone = TONE_META[recommendation.tone];
+              const Icon = tone.icon;
+              return (
+                <li
+                  key={index}
+                  className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0"
+                >
+                  <Icon size={18} className={`mt-0.5 shrink-0 ${tone.className}`} />
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-[13px] leading-6 text-ink">
+                      {recommendation.text}
+                    </p>
+                    <p className="text-[12px] leading-5 text-muted">
+                      {recommendation.reason}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }

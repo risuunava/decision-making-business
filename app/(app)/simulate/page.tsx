@@ -100,6 +100,7 @@ export default async function SimulatePage() {
       />
       <ScenarioForm
         currency={business.currency}
+        businessType={business.business_type}
         analysis={computeAnalysis(rows)}
       />
       <div className="grid gap-6 lg:grid-cols-2">
