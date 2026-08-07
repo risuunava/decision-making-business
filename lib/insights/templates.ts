@@ -1,4 +1,4 @@
-import type { SimulationResult } from "@/types";
+import type { ScenarioType, SimulationResult } from "@/types";
 import { formatNumber, SCENARIO_VERB } from "@/lib/constants";
 
 export type InsightTone = "positive" | "negative" | "warning" | "info";
@@ -12,27 +12,49 @@ export function formatPercent(value: number): string {
   return `${formatNumber(value, 1)}%`;
 }
 
+const SCENARIO_ORDER: ScenarioType[] = [
+  "pricing",
+  "discount",
+  "staffing",
+  "inventory",
+];
+
+// Variasi dipilih deterministik dari urutan skenario, bukan acak,
+// supaya output tetap bisa diuji dan tidak terasa berulang antar skenario.
+function variantIndex(result: SimulationResult, count: number): number {
+  return SCENARIO_ORDER.indexOf(result.scenarioType) % count;
+}
+
 function verdictInsight(result: SimulationResult): Insight {
   const label = SCENARIO_VERB[result.scenarioType];
+  const percent = formatPercent(result.profitChangePercent);
+  const positiveTexts = [
+    `${label} ini menaikkan profit ${percent} dibandingkan kondisi sekarang.`,
+    `Dengan ${label}, profit naik ${percent} dari kondisi saat ini.`,
+  ];
+  const negativeTexts = [
+    `${label} ini menurunkan profit ${percent} dibandingkan kondisi sekarang.`,
+    `Dengan ${label}, profit turun ${percent} dari kondisi saat ini.`,
+  ];
+  const neutralTexts = [
+    `${label} ini tidak mengubah profit secara signifikan.`,
+    `Tidak ada perubahan profit berarti dari ${label} ini.`,
+  ];
   if (result.profitChangePercent > 0) {
     return {
       tone: "positive",
-      text: `${label} ini menaikkan profit ${formatPercent(
-        result.profitChangePercent
-      )} dibandingkan kondisi sekarang.`,
+      text: positiveTexts[variantIndex(result, positiveTexts.length)],
     };
   }
   if (result.profitChangePercent < 0) {
     return {
       tone: "negative",
-      text: `${label} ini menurunkan profit ${formatPercent(
-        result.profitChangePercent
-      )} dibandingkan kondisi sekarang.`,
+      text: negativeTexts[variantIndex(result, negativeTexts.length)],
     };
   }
   return {
     tone: "info",
-    text: `${label} ini tidak mengubah profit secara signifikan.`,
+    text: neutralTexts[variantIndex(result, neutralTexts.length)],
   };
 }
 
@@ -49,11 +71,17 @@ function breakevenInsight(result: SimulationResult): Insight {
 
   if (breakeven.metric === "maxVolumeDrop") {
     if (result.profitChangePercent > 0) {
-      return {
-        tone: "positive",
-        text: `${label} ini tetap menguntungkan selama pelanggan tidak turun lebih dari ${formatPercent(
+      const positiveTexts = [
+        `${label} ini tetap menguntungkan selama pelanggan tidak turun lebih dari ${formatPercent(
           breakeven.value
         )}.`,
+        `Simulasi ini masih untung selama penurunan volume tidak melebihi ${formatPercent(
+          breakeven.value
+        )}.`,
+      ];
+      return {
+        tone: "positive",
+        text: positiveTexts[variantIndex(result, positiveTexts.length)],
       };
     }
     if (result.scenarioType === "inventory") {
@@ -136,9 +164,13 @@ export function buildInsights(result: SimulationResult): Insight[] {
   insights.push(breakevenInsight(result));
   const margin = marginInsight(result);
   if (margin) insights.push(margin);
+  const disclaimerTexts = [
+    "Angka ini dihitung dari asumsi yang Anda masukkan, bukan prediksi dari data historis.",
+    "Hasil ini mengikuti asumsi yang Anda isi, bukan perkiraan dari data historis.",
+  ];
   insights.push({
     tone: "info",
-    text: "Angka ini dihitung dari asumsi yang Anda masukkan, bukan prediksi dari data historis.",
+    text: disclaimerTexts[variantIndex(result, disclaimerTexts.length)],
   });
   return insights;
 }
