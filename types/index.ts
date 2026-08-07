@@ -43,13 +43,8 @@ export type ScenarioInput =
   | StaffingInput
   | InventoryInput;
 
-export type BreakevenMetric =
-  | "maxVolumeDrop"
-  | "minVolumeIncrease"
-  | "minRevenueIncrease";
-
 export interface BreakevenPoint {
-  metric: BreakevenMetric;
+  metric: "maxVolumeDrop" | "minVolumeIncrease" | "minRevenueIncrease";
   value: number;
   explanation: string;
 }

@@ -8,7 +8,7 @@ export interface Insight {
   text: string;
 }
 
-export function formatPercent(value: number): string {
+function formatPercent(value: number): string {
   return `${formatNumber(value, 1)}%`;
 }
 

@@ -1,7 +1,7 @@
 import type { ScenarioType } from "@/types";
 import { parseNumberInput } from "@/lib/validation/transactions";
 
-export interface ParsedInput {
+interface ParsedInput {
   scenarioType: ScenarioType;
   values: Record<string, number>;
 }

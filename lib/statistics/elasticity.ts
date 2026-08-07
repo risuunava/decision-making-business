@@ -4,7 +4,7 @@ import type { TransactionWithItem } from "@/lib/analytics/trends";
 export const MIN_PRICE_POINTS = 2;
 export const MIN_OBSERVATIONS = 3;
 
-export interface PriceVolumeObservation {
+interface PriceVolumeObservation {
   month: string;
   price: number;
   quantity: number;

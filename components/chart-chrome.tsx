@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { CartesianGrid, ResponsiveContainer } from "recharts";
 
 export const CHART = {
@@ -10,7 +10,7 @@ export const CHART = {
     borderRadius: 8,
     border: "1px solid #e5e5e5",
     fontSize: 13,
-  } as CSSProperties,
+  },
   cursor: { fill: "#fafafa" },
 };
 

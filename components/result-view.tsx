@@ -53,6 +53,30 @@ function Metric({
   );
 }
 
+function InsightRow({
+  tone,
+  text,
+  reason,
+}: {
+  tone: InsightTone;
+  text: string;
+  reason?: string;
+}) {
+  const toneMeta = TONE_META[tone];
+  const Icon = toneMeta.icon;
+  return (
+    <li className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0">
+      <Icon size={18} className={`mt-0.5 shrink-0 ${toneMeta.className}`} />
+      <div className="flex flex-col gap-0.5">
+        <p className="text-[13px] leading-6 text-ink">{text}</p>
+        {reason ? (
+          <p className="text-[12px] leading-5 text-muted">{reason}</p>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
 export function ResultView({
   result,
   currency,
@@ -169,19 +193,13 @@ export function ResultView({
           Analisis otomatis dari angka asumsi yang Anda masukkan.
         </p>
         <ul className="mt-4 flex flex-col gap-3">
-          {insights.map((insight, index) => {
-            const tone = TONE_META[insight.tone];
-            const Icon = tone.icon;
-            return (
-              <li
-                key={index}
-                className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0"
-              >
-                <Icon size={18} className={`mt-0.5 shrink-0 ${tone.className}`} />
-                <p className="text-[13px] leading-6 text-ink">{insight.text}</p>
-              </li>
-            );
-          })}
+          {insights.map((insight, index) => (
+            <InsightRow
+              key={index}
+              tone={insight.tone}
+              text={insight.text}
+            />
+          ))}
         </ul>
       </div>
 
@@ -195,26 +213,14 @@ export function ResultView({
             Berdasarkan analisis skenario Anda dan pola umum industri.
           </p>
           <ul className="mt-4 flex flex-col gap-3">
-            {recommendations.map((recommendation, index) => {
-              const tone = TONE_META[recommendation.tone];
-              const Icon = tone.icon;
-              return (
-                <li
-                  key={index}
-                  className="flex items-start gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0"
-                >
-                  <Icon size={18} className={`mt-0.5 shrink-0 ${tone.className}`} />
-                  <div className="flex flex-col gap-0.5">
-                    <p className="text-[13px] leading-6 text-ink">
-                      {recommendation.text}
-                    </p>
-                    <p className="text-[12px] leading-5 text-muted">
-                      {recommendation.reason}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
+            {recommendations.map((recommendation, index) => (
+              <InsightRow
+                key={index}
+                tone={recommendation.tone}
+                text={recommendation.text}
+                reason={recommendation.reason}
+              />
+            ))}
           </ul>
         </div>
       ) : null}
